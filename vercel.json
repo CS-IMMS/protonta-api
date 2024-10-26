@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
         {
-            "src": "dist/main.js",
+            "src": "dist/src/main.js",
             "use": "@vercel/node"
         }
     ],
@@ -17,5 +17,8 @@
                 "DELETE"
             ]
         }
-    ]
+    ],
+    "scripts": {
+        "build": "prisma generate"
+    }
 }
