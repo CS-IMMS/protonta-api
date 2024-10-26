@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "SensorData" ALTER COLUMN "latest" SET DATA TYPE BIGINT;

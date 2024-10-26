@@ -1,0 +1,62 @@
+// This is your Prisma schema file for PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model SensorData {
+  id                String  @id @default(uuid()) // Changed from MongoDB ObjectId to UUID
+  latest            BigInt
+  elapsed           Int
+  localName         String
+  temperature       Float
+  humidity          Float
+  pressure          Float
+  light_A           Float
+  sol               Float
+  acc_x             Float
+  acc_y             Float
+  acc_z             Float
+  iaq               Float
+  gyro_x            Float
+  gyro_y            Float
+  gyro_z            Float
+  accuracy          Int
+  SeuilHumidity_min Float
+  SeuilHumidity_max Float
+  SeuilTemp_min     Float
+  SeuilTemp_max     Float
+  SeuilLum_min      Float
+  SeuilLum_max      Float
+  SeuilPression_min Float
+  SeuilPression_max Float
+  SeuilCo2_min      Float
+  SeuilCo2_max      Float
+  MeanTemp          Float
+  MeanHumidity      Float
+  MeanLum           Float
+  MeanPress         Float
+  MeanCo2           Float
+  S1                Int
+  S2                Int
+  S3                Int
+  S4                Int
+  S5                Int
+  S6                Int
+  S7                Int
+  S8                Int
+  S9                Int
+  S10               Int
+  S11               Int
+  S12               Int
+  S13               Int
+  S14               Int
+  S15               Int
+  S16               Int
+  MomentFloraison   Boolean
+}
