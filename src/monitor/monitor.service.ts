@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { io } from 'socket.io-client';
 import { PrismaService } from 'src/prismaModule/prisma-service';
 import { SensorDataPost } from './interfaces/monitor.interface';
-
 @Injectable()
 export class MonitorService {
   constructor(private prisma: PrismaService) {}
-
+  async sendData(sensorData: any) {
+    const socket = io(process.env.API_URL);
+    socket.emit('sensorData', sensorData);
+  }
   async createSensorData(data: SensorDataPost) {
     return await this.prisma.sensorData.create({
       data: {

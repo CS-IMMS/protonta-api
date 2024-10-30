@@ -22,7 +22,7 @@ export class SensorGateway
   constructor(private monitorService: MonitorService) {}
   @WebSocketServer() server: Server;
 
-  private sensorData: SensorDataPost | null = null; // Pour stocker les dernières données de capteurs
+  private sensorData: SensorDataPost | null = null;
   private commands: SensorDataGet = {
     S0: 0,
     S1: 0,
@@ -92,8 +92,8 @@ export class SensorGateway
   handleGetCommands(client: Socket, payload: any): void {
     console.log('Sending current commands to the device');
     console.log('commande: ', payload);
-    
-    client.emit('commands', this.commands); 
+
+    client.emit('commands', this.commands);
   }
 
   // Mise à jour des commandes depuis le client React

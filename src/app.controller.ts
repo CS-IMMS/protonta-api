@@ -13,4 +13,8 @@ export class AppController {
   getHellofffff(): string {
     return this.appService.getHello();
   }
+  @Get('/send')
+  send(): string {
+    return this.appService.send();
+  }
 }
