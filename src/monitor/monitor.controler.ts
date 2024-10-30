@@ -1,13 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Post } from '@nestjs/common';
 import { MonitorService } from './monitor.service';
 
 @Controller('monitor')
 export class MonitorController {
   constructor(private monitorService: MonitorService) {}
 
-  @Get('')
-  initConnection(): any {
-    return this.monitorService.getAllSensorData();
+  @Post('/sendData')
+  initConnection(@Body() data: any): any {
+    return this.monitorService.sendData(data);
   }
 }

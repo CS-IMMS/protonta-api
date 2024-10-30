@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MonitorModule } from './monitor/monitor.module';
-import { ConfigModule } from '@nestjs/config';
+import { SerialPortModule } from './serial-port/serial-port.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, // Rendre les variables d'environnement accessibles globalement
+      isGlobal: true,
     }),
     MonitorModule,
+    SerialPortModule,
   ],
   controllers: [AppController],
   providers: [AppService],
