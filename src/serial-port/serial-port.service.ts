@@ -41,12 +41,8 @@ export class SerialPortService implements OnModuleInit {
 
     this.port.on('data', (data: any) => {
       console.log('Données reçues:', data);
-      const receivedData = data.toString(); // Convertit le buffer en string
-      console.log('Données reçues:', receivedData);
-
-      // Si les données sont en format CSV, les diviser par la virgule
-      const dataArray = receivedData.split(','); // Crée un tableau basé sur la virgule
-      console.log('Données décodées:', dataArray);
+      const receivedData = data.toString();
+      console.log('Données reçues:', this.bufferToAscii(receivedData));
     });
 
     // Gestion des erreurs
@@ -59,12 +55,16 @@ export class SerialPortService implements OnModuleInit {
   public readData(): Promise<string> {
     return new Promise((resolve, reject) => {
       this.port.once('data', (data: any) => {
-        resolve(data.toString());
+        resolve(this.bufferToAscii(data));
       });
 
       this.port.once('error', (err) => {
         reject(err);
       });
     });
+  }
+  private bufferToAscii(bufferData: { type: string; data: number[] }): string {
+    const buffer = Buffer.from(bufferData.data); // Crée un buffer à partir du tableau de données
+    return buffer.toString('ascii'); // Convertit le buffer en chaîne ASCII
   }
 }
