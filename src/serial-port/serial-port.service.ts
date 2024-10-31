@@ -40,7 +40,7 @@ export class SerialPortService implements OnModuleInit {
     });
 
     this.port.on('data', (data: any) => {
-      console.log('Données reçues:', data);
+      // console.log('Données reçues:', data);
       const receivedData = data.toString(); // Convertit le buffer en string
       console.log('Données reçues:', receivedData);
 
@@ -58,10 +58,19 @@ export class SerialPortService implements OnModuleInit {
   // Méthode pour lire des données
   public readData(): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.port.once('data', (data: any) => {
-        resolve(data);
+      let receivedData = '';
+
+      // Écoute des données reçues en morceaux
+      this.port.on('data', (data: Buffer) => {
+        receivedData += data.toString(); // Ajoute les nouvelles données au texte complet
       });
 
+      // Détecte la fin de transmission (selon un délimiteur de fin ou un timer, si applicable)
+      this.port.once('close', () => {
+        resolve(receivedData); // Envoie toutes les données collectées
+      });
+
+      // Gestion des erreurs
       this.port.once('error', (err) => {
         reject(err);
       });
