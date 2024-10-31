@@ -42,7 +42,7 @@ export class SerialPortService implements OnModuleInit {
     this.port.on('data', (data: any) => {
       console.log('Données reçues:', data);
       const receivedData = data.toString(); // Convertit le buffer en string
-      console.log('Données converty:', receivedData);
+      console.log('Données reçues:', receivedData);
 
       // Si les données sont en format CSV, les diviser par la virgule
       const dataArray = receivedData.split(','); // Crée un tableau basé sur la virgule
@@ -58,17 +58,10 @@ export class SerialPortService implements OnModuleInit {
   // Méthode pour lire des données
   public readData(): Promise<string> {
     return new Promise((resolve, reject) => {
-      let receivedData = '';
-
-      // Écoute des données reçues en morceaux
-      this.port.on('data', (data: Buffer) => {
-        receivedData += data.toString();
-      });
-      this.port.once('close', () => {
-        resolve(receivedData); // Envoie toutes les données collectées
+      this.port.once('data', (data: any) => {
+        resolve(data.toString());
       });
 
-      // Gestion des erreurs
       this.port.once('error', (err) => {
         reject(err);
       });
