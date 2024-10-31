@@ -39,7 +39,7 @@ export class SerialPortService implements OnModuleInit {
       baudRate: 115200,
     });
 
-    this.port.on('data', (data: Buffer) => {
+    this.port.on('data', (data: any) => {
       const receivedData = data.toString(); // Convertit le buffer en string
       console.log('Données reçues:', receivedData);
 
