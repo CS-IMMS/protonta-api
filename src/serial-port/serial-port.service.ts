@@ -40,9 +40,9 @@ export class SerialPortService implements OnModuleInit {
     });
 
     this.port.on('data', (data: any) => {
-      // console.log('Données reçues:', data);
+      console.log('Données reçues:', data);
       const receivedData = data.toString(); // Convertit le buffer en string
-      console.log('Données reçues:', receivedData);
+      console.log('Données converty:', receivedData);
 
       // Si les données sont en format CSV, les diviser par la virgule
       const dataArray = receivedData.split(','); // Crée un tableau basé sur la virgule
@@ -62,10 +62,8 @@ export class SerialPortService implements OnModuleInit {
 
       // Écoute des données reçues en morceaux
       this.port.on('data', (data: Buffer) => {
-        receivedData += data.toString(); // Ajoute les nouvelles données au texte complet
+        receivedData += data.toString();
       });
-
-      // Détecte la fin de transmission (selon un délimiteur de fin ou un timer, si applicable)
       this.port.once('close', () => {
         resolve(receivedData); // Envoie toutes les données collectées
       });
