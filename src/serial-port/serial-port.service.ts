@@ -11,6 +11,7 @@ export class SerialPortService implements OnModuleInit {
 
     if (portPath) {
       this.initializeSerialPort(portPath);
+      this.readData();
     } else {
       console.error('Aucun port USB disponible trouvé.');
     }
@@ -18,7 +19,10 @@ export class SerialPortService implements OnModuleInit {
   private async findSerialPort(): Promise<string | null> {
     const ports = await SerialPort.list();
     const usbPort = ports.find(
-      (port) => port.path.includes('ttyUSB') || port.path.includes('ttyACM'),
+      (port) =>
+        port.path.includes('ttyUSB') ||
+        port.path.includes('ttyACM') ||
+        port.path.includes('001'), // Vérifie si le port est sur le bus 001
     );
 
     if (usbPort) {
@@ -32,7 +36,7 @@ export class SerialPortService implements OnModuleInit {
   private initializeSerialPort(portPath: string) {
     this.port = new SerialPort({
       path: portPath,
-      baudRate: 11150,
+      baudRate: 115200,
     });
 
     this.port.on('data', (data: any) => {
