@@ -40,6 +40,7 @@ export class SerialPortService implements OnModuleInit {
     });
 
     this.port.on('data', (data: any) => {
+      console.log('Données reçues:', data);
       const receivedData = data.toString(); // Convertit le buffer en string
       console.log('Données reçues:', receivedData);
 
