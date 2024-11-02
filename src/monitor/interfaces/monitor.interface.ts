@@ -1,6 +1,6 @@
-export interface SensorDataPost {
-  latest: number; // Latest sensor reading timestamp or identifier
-  elapsed: number; // Elapsed time since the last reading
+export interface ISensorDataPost {
+  latest: string; // Latest sensor reading timestamp or identifier
+  elapsed: string; // Elapsed time since the last reading
   localName: string; // Local name of the sensor/device
   temperature: number; // Temperature value
   humidity: number; // Humidity value

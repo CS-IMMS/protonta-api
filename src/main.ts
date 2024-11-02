@@ -1,9 +1,27 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError } from 'class-validator';
+import helmet from 'helmet';
+import * as responseTime from 'response-time';
 import { AppModule } from './app.module';
-
+import { validationError } from './core/shared/filters/validation.errors';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(helmet());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      always: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        return validationError(errors);
+      },
+    }),
+  );
+  app.enableCors({
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, sentry-trace',
+  });
   const config = new DocumentBuilder()
     .setTitle('Sensor API')
     .setDescription(
@@ -17,7 +35,8 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
-  const port = process.env.PORT || 3000
+  app.use(responseTime());
+  const port = process.env.PORT || 3000;
   await app.listen(port);
 }
 bootstrap();

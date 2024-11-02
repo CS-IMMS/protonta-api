@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MonitorModule } from './monitor/monitor.module';
-import { SerialPortModule } from './serial-port/serial-port.module';
+import { SocketGateway } from './socket/socket.service';
 
 @Module({
   imports: [
@@ -11,9 +11,8 @@ import { SerialPortModule } from './serial-port/serial-port.module';
       isGlobal: true,
     }),
     MonitorModule,
-    SerialPortModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SocketGateway],
 })
 export class AppModule {}
