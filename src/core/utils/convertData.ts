@@ -12,11 +12,14 @@ const bufferData = {
   ],
 };
 
-const convertBufferData = (bufferData: IMonitorData): string => {
-  const buffer = Buffer.from(bufferData.data);
+const convertBufferData = (bufferData: any): string => {
+  // If bufferData is not already a Buffer, convert it to one
+  const buffer = Buffer.isBuffer(bufferData)
+    ? bufferData
+    : Buffer.from(bufferData);
 
+  // Convert the buffer to an ASCII string
   const asciiString = buffer.toString('ascii');
-
   return asciiString.trim();
 };
 const parseSensorData = (dataString: string): ISensorDataPost => {
