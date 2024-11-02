@@ -1,12 +1,22 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import { ISensorDataPost } from 'src/monitor/interfaces/monitor.interface';
-import { PrismaService } from './prisma-service';
+import { PrismaService } from '../../../prismaModule/prisma-service';
 
 export class DataBaseService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
+  async deleteAllResource() {
+    const data = await this.prisma.sensorDatas
+      .deleteMany()
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((erro) => {
+        console.log(erro);
+      });
+  }
   async saveSensorData(data: ISensorDataPost) {
-    return await this.prisma.sensorData
+    return await this.prisma.sensorDatas
       .create({
         data: {
           latest: data.latest,

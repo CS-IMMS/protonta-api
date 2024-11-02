@@ -22,14 +22,18 @@ const convertBufferData = (bufferData: any): string => {
   const asciiString = buffer.toString('ascii');
   return asciiString.trim();
 };
+const parseData = (data: string) => {
+  const date = new Date(new Date().getTime() + Number(data) * 1000);
+  return date.toISOString();
+};
 const parseSensorData = (dataString: string): ISensorDataPost => {
   const dataArray = dataString.split(',');
   console.log(dataArray[0]);
   const date = new Date(new Date().getTime() + Number(dataArray[0]) * 1000);
   console.log(date.toISOString());
   return {
-    latest: date.toISOString(),
-    elapsed: date.toISOString(),
+    latest: parseData(dataArray[0]),
+    elapsed: parseData(dataArray[1]),
     localName: dataArray[2],
     temperature: Number(dataArray[3]),
     humidity: Number(dataArray[4]),

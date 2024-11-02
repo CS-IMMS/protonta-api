@@ -6,8 +6,10 @@ import helmet from 'helmet';
 import * as responseTime from 'response-time';
 import { AppModule } from './app.module';
 import { validationError } from './core/shared/filters/validation.errors';
+import { Logger } from 'nestjs-pino';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.use(helmet());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -35,6 +37,7 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
+  app.useLogger(app.get(Logger));
   app.use(responseTime());
   const port = process.env.PORT || 3000;
   await app.listen(port);

@@ -65,14 +65,15 @@
 //   }
 // }
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { PinoLogger } from 'nestjs-pino';
 import { SerialPort } from 'serialport';
+import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
   convertBufferData,
   IMonitorData,
   parseSensorData,
 } from './core/utils/convertData';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
-import { DataBaseService } from './prismaModule/dataBase.service';
 import { SocketGateway } from './socket/socket.service';
 
 @Injectable()
@@ -81,16 +82,19 @@ export class AppService implements OnModuleInit {
   constructor(
     private dataBaseService: DataBaseService,
     private socketGateway: SocketGateway,
+    private readonly logger: PinoLogger,
   ) {}
   async onModuleInit() {
     const portPath = await this.findSerialPort();
-    console.log('portPath:::', portPath);
-
+    this.logger.info('portPath:::', portPath);
     if (portPath) {
       this.initializeSerialPort(portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
     }
+  }
+  async healthCheck() {
+    return 'hello world';
   }
   async simulator(data: IMonitorData): Promise<ISensorDataPost> {
     let dataConvert = '';
@@ -112,6 +116,7 @@ export class AppService implements OnModuleInit {
 
     if (usbPort) {
       console.log(`Port USB trouvé : ${usbPort.path}`);
+      this.logger.info(`Port USB trouvé : ${usbPort.path}`);
       return usbPort.path;
     } else {
       return null;
@@ -126,8 +131,7 @@ export class AppService implements OnModuleInit {
 
     this.port.on('data', async (data: any) => {
       try {
-        console.log('curent data:::', data);
-
+        this.logger.info('curent data:::', data);
         // Convertir et parser les données reçues
         const dataConvert = convertBufferData(data);
         const dataParse: ISensorDataPost = parseSensorData(dataConvert);
