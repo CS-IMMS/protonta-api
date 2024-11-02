@@ -12,8 +12,8 @@ export class AppController {
     return this.appService.simulator(data);
   }
   @Get()
-  getHellos(@Body() data: IMonitorData): Promise<ISensorDataPost> {
-    return this.appService.simulator(data);
+  getHellos(): Promise<string> {
+    return this.appService.healthCheck();
   }
   // @Get('/test')
   // getHellofffff(): string {
