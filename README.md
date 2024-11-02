@@ -1,4 +1,4 @@
-docker compose -f mongodb-docker-compose.yml up -d
+docker compose -f docker-compose.yml up -d
 
 ##  Créer un fichier de clé (keyFile)
 `openssl rand -base64 756 > mongodb-keyfile

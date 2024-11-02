@@ -124,7 +124,7 @@ export class AppService implements OnModuleInit {
       baudRate: 115200,
     });
 
-    this.port.on('data', async (data: IMonitorData) => {
+    this.port.on('data', async (data: any) => {
       try {
         console.log('curent data:::', data);
 
