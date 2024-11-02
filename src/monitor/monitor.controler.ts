@@ -7,6 +7,6 @@ export class MonitorController {
 
   @Post('/sendData')
   initConnection(@Body() data: any): any {
-    return this.monitorService.sendData(data);
+    // return this.monitorService.sendData(data);
   }
 }
