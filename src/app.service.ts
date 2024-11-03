@@ -74,6 +74,7 @@ import {
   parseSensorData,
 } from './core/utils/convertData';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
+import { PrismaService } from './prismaModule/prisma-service';
 import { SocketGateway } from './socket/socket.service';
 
 @Injectable()
@@ -83,6 +84,7 @@ export class AppService implements OnModuleInit {
     private dataBaseService: DataBaseService,
     private socketGateway: SocketGateway,
     private readonly logger: PinoLogger,
+    private readonly prisma: PrismaService,
   ) {}
   async onModuleInit() {
     const portPath = await this.findSerialPort();
@@ -138,7 +140,9 @@ export class AppService implements OnModuleInit {
         console.log('data recive:::::', dataParse);
 
         // Sauvegarder les données dans la base de données
-        await this.dataBaseService.saveSensorData(dataParse);
+        await this.prisma.sensorDatas.create({
+          data: dataParse,
+        });
 
         // Envoyer les données aux clients via WebSocket
         this.socketGateway.sendSensorData(dataParse);
