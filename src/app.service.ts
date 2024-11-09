@@ -136,9 +136,8 @@ export class AppService implements OnModuleInit {
         console.log('Data received:', data);
         const dataParse: ISensorDataPost = parseSensorData(data.trim());
         console.log('Parsed data:', dataParse);
-
-        await this.prisma.sensorDatas.create({ data: dataParse });
         this.socketGateway.sendSensorData(dataParse);
+        await this.prisma.sensorDatas.create({ data: dataParse });
       } catch (error) {
         console.error(
           'Erreur lors du traitement des données du port série:',
