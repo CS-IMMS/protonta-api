@@ -133,22 +133,12 @@ export class AppService implements OnModuleInit {
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     parser.on('data', async (data: any) => {
       try {
-        // buffer += data.toString();
-
         console.log('Data received:', data);
-        // if (buffer.includes('\n')) {
-        //   const lines = buffer.split('\n');
-        //   buffer = lines.pop() || '';
-        //   for (const line of lines) {
-        //     console.log('data received:', line);
-        //     // const dataParse: ISensorDataPost = parseSensorData(line.trim());
-        //     // console.log('parsed data:', dataParse);
-        //     // await this.prisma.sensorDatas.create({
-        //     //   data: dataParse,
-        //     // });
-        //     // this.socketGateway.sendSensorData(dataParse);
-        //   }
-        // }
+        const dataParse: ISensorDataPost = parseSensorData(data.trim());
+        console.log('Parsed data:', dataParse);
+
+        await this.prisma.sensorDatas.create({ data: dataParse });
+        this.socketGateway.sendSensorData(dataParse);
       } catch (error) {
         console.error(
           'Erreur lors du traitement des données du port série:',
