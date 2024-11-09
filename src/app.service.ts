@@ -1,70 +1,5 @@
-// import { Injectable } from '@nestjs/common';
-// import { io } from 'socket.io-client';
-// @Injectable()
-// export class AppService {
-//   getHello(): string {
-//     return 'Hello World!';
-//   }
-//   send(): string {
-//     const socket = io('https://protonta-api.onrender.com');
-//     const sensorData = {
-//       latest: Date.now(),
-//       elapsed: 1000, // Temps écoulé en millisecondes
-//       localName: 's1',
-//       temperature: Math.random() * 30,
-//       humidity: Math.random() * 100,
-//       pressure: Math.random() * 1000,
-//       light_A: Math.random() * 100,
-//       sol: Math.random(),
-//       acc_x: Math.random(),
-//       acc_y: Math.random(),
-//       acc_z: Math.random(),
-//       iaq: Math.random() * 500,
-//       gyro_x: Math.random(),
-//       gyro_y: Math.random(),
-//       gyro_z: Math.random(),
-//       accuracy: Math.floor(Math.random() * 100),
-//       SeuilHumidity_min: 30,
-//       SeuilHumidity_max: 70,
-//       SeuilTemp_min: 15,
-//       SeuilTemp_max: 25,
-//       SeuilLum_min: 100,
-//       SeuilLum_max: 400,
-//       SeuilPression_min: 950,
-//       SeuilPression_max: 1050,
-//       SeuilCo2_min: 400,
-//       SeuilCo2_max: 1000,
-//       MeanTemp: Math.random() * 30,
-//       MeanHumidity: Math.random() * 100,
-//       MeanLum: Math.random() * 100,
-//       MeanPress: Math.random() * 1000,
-//       MeanCo2: Math.random() * 1000,
-//       S1: Math.round(Math.random()), // État de sortie
-//       S2: Math.round(Math.random()),
-//       S3: Math.round(Math.random()),
-//       S4: Math.round(Math.random()),
-//       S5: Math.round(Math.random()),
-//       S6: Math.round(Math.random()),
-//       S7: Math.round(Math.random()),
-//       S8: Math.round(Math.random()),
-//       S9: Math.round(Math.random()),
-//       S10: Math.round(Math.random()),
-//       S11: Math.round(Math.random()),
-//       S12: Math.round(Math.random()),
-//       S13: Math.round(Math.random()),
-//       S14: Math.round(Math.random()),
-//       S15: Math.round(Math.random()),
-//       S16: Math.round(Math.random()),
-//       MomentFloraison: Math.random() > 0.5,
-//     };
-//     socket.emit('sensorData', sensorData);
-//     socket.on('getCommands', (dataRecive) => {
-//       console.log('les comande:', dataRecive);
-//     });
-//     return 'data send';
-//   }
-// }
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { NotificationType } from '@prisma/client';
 import { PinoLogger } from 'nestjs-pino';
 import { ReadlineParser, SerialPort } from 'serialport';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
@@ -75,11 +10,16 @@ import {
 } from './core/utils/convertData';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
+import { ProtentaStatusEnum } from './socket/notification.interface';
 import { SocketGateway } from './socket/socket.service';
 
 @Injectable()
 export class AppService implements OnModuleInit {
   private port: SerialPort;
+  private lastDataReceivedTime: number | null = null;
+  private inactivityTimeout: number = 5000;
+  private inactivityCheckInterval: NodeJS.Timeout | null = null;
+  private portPath!: string;
   constructor(
     private dataBaseService: DataBaseService,
     private socketGateway: SocketGateway,
@@ -87,16 +27,26 @@ export class AppService implements OnModuleInit {
     private readonly prisma: PrismaService,
   ) {}
   async onModuleInit() {
-    const portPath = await this.findSerialPort();
-    this.logger.info('portPath:::', portPath);
-    if (portPath) {
-      this.initializeSerialPort(portPath);
+    this.portPath = await this.findSerialPort();
+    this.logger.info('portPath:::', this.portPath);
+    if (this.portPath) {
+      this.initializeSerialPort(this.portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
+      this.socketGateway.notification(
+        NotificationType.Moniteur,
+        String(ProtentaStatusEnum.inactive),
+      );
     }
   }
   async healthCheck() {
     return 'hello world';
+  }
+  async resatartService(status: boolean) {
+    if (status === true) {
+      this.initializeSerialPort(this.portPath);
+    }
+    return { message: 'service restart' };
   }
   async simulator(data: IMonitorData): Promise<ISensorDataPost> {
     let dataConvert = '';
@@ -124,6 +74,30 @@ export class AppService implements OnModuleInit {
       return null;
     }
   }
+  sendSensorNotifications(sensorData: ISensorDataPost) {
+    const alerts = {
+      a1: { type: 'Bipeure', message: 'Bipeur Allumé' },
+      a2: { type: 'Ombriere', message: 'Ombrière déployée' },
+      a3: { type: 'Ombriere', message: 'Ombrière rétractée' },
+      a4: { type: 'SAS', message: 'SAS porte 1 ouverte' },
+      a5: { type: 'SAS', message: 'SAS porte 2 ouverte' },
+      a6: { type: 'Chateau', message: "Niveau Bas Chateau d'eau Pad Cooling" },
+      a7: { type: 'Chateau', message: "Niveau Bas Chateau d'eau Irrigation" },
+      a8: { type: 'Chateau', message: "Niveau Bas Chateau d'eau Aéroponie" },
+      a9: { type: 'Chateau', message: "Niveau Bas Chateau d'eau Hydroponie" },
+      a10: { type: 'Chateau', message: 'Niveau Bas Chateau d’eau Fertilisée' },
+    };
+
+    Object.keys(alerts).forEach((key) => {
+      if (sensorData[key] === 1) {
+        const alert = alerts[key];
+        this.socketGateway.notification(
+          alert.type as NotificationType,
+          alert.message,
+        );
+      }
+    });
+  }
 
   private initializeSerialPort(portPath: string) {
     this.port = new SerialPort({
@@ -133,11 +107,18 @@ export class AppService implements OnModuleInit {
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     parser.on('data', async (data: any) => {
       try {
-        console.log('Data received:', data);
-        const dataParse: ISensorDataPost = parseSensorData(data.trim());
-        console.log('Parsed data:', dataParse);
-        this.socketGateway.sendSensorData(dataParse);
-        await this.prisma.sensorDatas.create({ data: dataParse });
+        if (data) {
+          this.lastDataReceivedTime = Date.now();
+          // this.socketGateway.notification(ProtentaStatusEnum.active);
+          const dataParse: ISensorDataPost = parseSensorData(data.trim());
+          console.log('Parsed data:', dataParse);
+          this.socketGateway.sendSensorData(dataParse);
+          await this.prisma.sensorDatas.create({ data: dataParse });
+          this.sendSensorNotifications(dataParse);
+          this.restartInactivityCheck();
+        } else {
+          this.checkInactivity();
+        }
       } catch (error) {
         console.error(
           'Erreur lors du traitement des données du port série:',
@@ -145,10 +126,43 @@ export class AppService implements OnModuleInit {
         );
       }
     });
-
+    this.port.on('close', () => {
+      console.log('Port série fermé');
+      this.stopInactivityCheck();
+      this.socketGateway.notification(
+        NotificationType.Moniteur,
+        String(ProtentaStatusEnum.inactive),
+      );
+    });
     // Gestion des erreurs
     this.port.on('error', (err) => {
       console.error('Erreur du port série:', err.message);
     });
+
+    this.startInactivityCheck();
+  }
+  private startInactivityCheck() {
+    if (!this.inactivityCheckInterval) {
+      this.inactivityCheckInterval = setInterval(
+        () => this.checkInactivity(),
+        5000,
+      );
+    }
+  }
+  private restartInactivityCheck() {
+    this.stopInactivityCheck();
+    this.startInactivityCheck();
+  }
+  private stopInactivityCheck() {
+    if (this.inactivityCheckInterval) {
+      clearInterval(this.inactivityCheckInterval);
+      this.inactivityCheckInterval = null;
+    }
+  }
+  checkInactivity() {
+    this.socketGateway.notification(
+      NotificationType.Moniteur,
+      String(ProtentaStatusEnum.inactive),
+    );
   }
 }

@@ -15,6 +15,10 @@ export class AppController {
   getHellos(): Promise<string> {
     return this.appService.healthCheck();
   }
+  @Post('monitor-restart')
+  protendataRestart(@Body() status: boolean) {
+    return this.appService.resatartService(status);
+  }
   // @Get('/test')
   // getHellofffff(): string {
   //   return this.appService.getHello();

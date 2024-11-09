@@ -87,8 +87,19 @@ const parseSensorData = (dataString: string): ISensorDataPost => {
     S16: Number(dataArray[46]),
 
     MomentFloraison: Boolean(Number(dataArray[47])),
+    a1: Number(dataArray[48]),
+    a2: Number(dataArray[49]),
+    a3: Number(dataArray[50]),
+    a4: Number(dataArray[51]),
+    a5: Number(dataArray[52]),
+    a6: Number(dataArray[53]),
+    a7: Number(dataArray[54]),
+    a8: Number(dataArray[55]),
+    a9: Number(dataArray[56]),
+    a10: Number(dataArray[57]),
   };
 };
+
 interface IMonitorData {
   type: string;
   data: number[];

@@ -54,6 +54,16 @@ export interface ISensorDataPost {
   S16: number;
 
   MomentFloraison: boolean; // Indicates whether flowering has started
+  a1: number; // Output atate for a1 (0 = off, 1 = on)
+  a2: number;
+  a3: number;
+  a4: number;
+  a5: number;
+  a6: number;
+  a7: number;
+  a8: number;
+  a9: number;
+  a10: number;
 }
 
 export interface SensorDataGet {
@@ -98,3 +108,21 @@ export interface SensorDataGet {
   minute: number; // Minute for time synchronization
   second: number; // Second for time synchronization
 }
+
+const dataRecive = {
+  S1: { active: '101', inactive: '100' },
+  S2: { active: '111', inactive: '110' },
+  S3: { active: '121', inactive: '120' },
+  S4: { active: '131', inactive: '130' },
+  S5: { active: '141', inactive: '140' },
+  S6: { active: '151', inactive: '150' },
+  S7: { active: '161', inactive: '160' },
+  S8: { active: '171', inactive: '170' },
+  S9: { active: '181', inactive: '180' },
+  S10: { active: '191', inactive: '190' },
+  S11: { active: '201', inactive: '200' },
+  S12: { deploy: '220', inactive: '222', reactor: '221' },
+  S13: { active: '231', inactive: '230' },
+  S14: { active: '241', inactive: '240' },
+  S15: { active: '251', inactive: '250' },
+};

@@ -60,6 +60,16 @@ model SensorDatas {
   S15               Int
   S16               Int
   MomentFloraison   Boolean
+  a1                Int      @default(0)
+  a2                Int      @default(0)
+  a3                Int      @default(0)
+  a4                Int      @default(0)
+  a5                Int      @default(0)
+  a6                Int      @default(0)
+  a7                Int      @default(0)
+  a8                Int      @default(0)
+  a9                Int      @default(0)
+  a10               Int      @default(0)
 }
 
 model SensorDataForMinute {
@@ -98,44 +108,45 @@ model SensorDataForMinute {
   lastMeanPress        Float?
   lastMeanCo2          Float?
 
-  S1                   Int 
-  S2                   Int
-  S3                   Int
-  S4                   Int
-  S5                   Int
-  S6                   Int
-  S7                   Int
-  S8                   Int
-  S9                   Int
-  S10                  Int
-  S11                  Int
-  S12                  Int
-  S13                  Int
-  S14                  Int
-  S15                  Int
-  S16                  Int
-  momentFloraison      Boolean
-  originalDataId       String? // Reference to SensorData.id for traceability
+  S1              Int
+  S2              Int
+  S3              Int
+  S4              Int
+  S5              Int
+  S6              Int
+  S7              Int
+  S8              Int
+  S9              Int
+  S10             Int
+  S11             Int
+  S12             Int
+  S13             Int
+  S14             Int
+  S15             Int
+  S16             Int
+  momentFloraison Boolean
+  originalDataId  String? // Reference to SensorData.id for traceability
 }
+
 model SensorDataForHour {
-  id                String   @id @default(uuid())
-  timestamp         DateTime @default(now())
-  startTimestamp    DateTime // Start of the aggregation period
-  endTimestamp      DateTime // End of the aggregation period
+  id             String   @id @default(uuid())
+  timestamp      DateTime @default(now())
+  startTimestamp DateTime // Start of the aggregation period
+  endTimestamp   DateTime // End of the aggregation period
 
   // Aggregated averages for hourly data
-  averageTemp       Float?
-  averageHumidity   Float?
-  averagePressure   Float?
-  averageLightA     Float?
-  averageSol        Float?
-  averageAccX       Float?
-  averageAccY       Float?
-  averageAccZ       Float?
-  averageIaq        Float?
-  averageGyroX      Float?
-  averageGyroY      Float?
-  averageGyroZ      Float?
+  averageTemp     Float?
+  averageHumidity Float?
+  averagePressure Float?
+  averageLightA   Float?
+  averageSol      Float?
+  averageAccX     Float?
+  averageAccY     Float?
+  averageAccZ     Float?
+  averageIaq      Float?
+  averageGyroX    Float?
+  averageGyroY    Float?
+  averageGyroZ    Float?
 
   // Last values for thresholds and mean fields
   lastSeuilHumidityMin Float?
@@ -154,43 +165,44 @@ model SensorDataForHour {
   lastMeanPress        Float?
   lastMeanCo2          Float?
 
-  S1                Int
-  S2                Int
-  S3                Int
-  S4                Int
-  S5                Int
-  S6                Int
-  S7                Int
-  S8                Int
-  S9                Int
-  S10               Int
-  S11               Int
-  S12               Int
-  S13               Int
-  S14               Int
-  S15               Int
-  S16               Int
-  momentFloraison   Boolean
+  S1              Int
+  S2              Int
+  S3              Int
+  S4              Int
+  S5              Int
+  S6              Int
+  S7              Int
+  S8              Int
+  S9              Int
+  S10             Int
+  S11             Int
+  S12             Int
+  S13             Int
+  S14             Int
+  S15             Int
+  S16             Int
+  momentFloraison Boolean
 }
+
 model SensorDataForDay {
-  id                String   @id @default(uuid())
-  timestamp         DateTime @default(now())
-  startTimestamp    DateTime // Start of the aggregation period
-  endTimestamp      DateTime // End of the aggregation period
+  id             String   @id @default(uuid())
+  timestamp      DateTime @default(now())
+  startTimestamp DateTime // Start of the aggregation period
+  endTimestamp   DateTime // End of the aggregation period
 
   // Aggregated averages for hourly data
-  averageTemp       Float?
-  averageHumidity   Float?
-  averagePressure   Float?
-  averageLightA     Float?
-  averageSol        Float?
-  averageAccX       Float?
-  averageAccY       Float?
-  averageAccZ       Float?
-  averageIaq        Float?
-  averageGyroX      Float?
-  averageGyroY      Float?
-  averageGyroZ      Float?
+  averageTemp     Float?
+  averageHumidity Float?
+  averagePressure Float?
+  averageLightA   Float?
+  averageSol      Float?
+  averageAccX     Float?
+  averageAccY     Float?
+  averageAccZ     Float?
+  averageIaq      Float?
+  averageGyroX    Float?
+  averageGyroY    Float?
+  averageGyroZ    Float?
 
   // Last values for thresholds and mean fields
   lastSeuilHumidityMin Float?
@@ -209,21 +221,80 @@ model SensorDataForDay {
   lastMeanPress        Float?
   lastMeanCo2          Float?
 
-  S1                Int
-  S2                Int
-  S3                Int
-  S4                Int
-  S5                Int
-  S6                Int
-  S7                Int
-  S8                Int
-  S9                Int
-  S10               Int
-  S11               Int
-  S12               Int
-  S13               Int
-  S14               Int
-  S15               Int
-  S16               Int
-  momentFloraison   Boolean
+  S1              Int
+  S2              Int
+  S3              Int
+  S4              Int
+  S5              Int
+  S6              Int
+  S7              Int
+  S8              Int
+  S9              Int
+  S10             Int
+  S11             Int
+  S12             Int
+  S13             Int
+  S14             Int
+  S15             Int
+  S16             Int
+  momentFloraison Boolean
+}
+
+// model SensorDataCommande {
+//   id        String   @id @default(uuid())
+//   timestamp DateTime @default(now())
+
+//   S0  Int
+//   S1  Int
+//   S2  Int
+//   S3  Int
+//   S4  Int
+//   S5  Int
+//   S6  Int
+//   S7  Int
+//   S8  Int
+//   S9  Int
+//   S10 Int
+//   S11 Int
+//   S12 Int
+//   S13 Int
+//   S14 Int
+//   S15 Int
+
+//   SeuilHumidity_min Float
+//   SeuilHumidity_max Float
+//   SeuilTemp_min     Float
+//   SeuilTemp_max     Float
+//   SeuilLum_min      Float
+//   SeuilLum_max      Float
+//   SeuilPression_min Float
+//   SeuilPression_max Float
+//   SeuilCo2_min      Float
+//   SeuilCo2_max      Float
+
+//   MomentFloraison      Boolean
+//   pollinationStartTime Int
+//   pollinationEndTime   Int
+
+//   year   Int
+//   month  Int
+//   day    Int
+//   hour   Int
+//   minute Int
+//   second Int
+// }
+
+model Notification {
+  id        String           @id @default(uuid())
+  timestamp DateTime         @default(now())
+  type      NotificationType
+  value     String
+}
+
+enum NotificationType {
+  Moniteur
+  Chateau
+  SAS
+  Bipeure
+  Ombriere
 }
