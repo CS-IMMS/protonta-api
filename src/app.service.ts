@@ -160,12 +160,12 @@ export class AppService implements OnModuleInit {
           buffer = lines.pop() || '';
           for (const line of lines) {
             console.log('data received:', line);
-            const dataParse: ISensorDataPost = parseSensorData(line.trim());
-            console.log('parsed data:', dataParse);
-            await this.prisma.sensorDatas.create({
-              data: dataParse,
-            });
-            this.socketGateway.sendSensorData(dataParse);
+            // const dataParse: ISensorDataPost = parseSensorData(line.trim());
+            // console.log('parsed data:', dataParse);
+            // await this.prisma.sensorDatas.create({
+            //   data: dataParse,
+            // });
+            // this.socketGateway.sendSensorData(dataParse);
           }
         }
       } catch (error) {
