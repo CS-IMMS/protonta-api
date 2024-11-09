@@ -133,7 +133,7 @@ export class AppService implements OnModuleInit {
 
     this.port.on('data', async (data: any) => {
       try {
-        console.log('data recive...............');
+        console.log('data recive...............', data);
 
         this.logger.info('curent data:::', data);
         // Convertir et parser les données reçues
