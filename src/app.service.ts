@@ -66,7 +66,7 @@
 // }
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
-import { SerialPort } from 'serialport';
+import { ReadlineParser, SerialPort } from 'serialport';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
   convertBufferData,
@@ -130,44 +130,25 @@ export class AppService implements OnModuleInit {
       path: portPath,
       baudRate: 115200,
     });
-
-    this.port.on('data', async (data: any) => {
-      let buffer = '';
-      // try {
-      //   console.log('data recive...............', data);
-
-      //   this.logger.info('curent data:::', data);
-      //   // Convertir et parser les données reçues
-      //   const dataConvert = convertBufferData(data);
-      //   console.log('data converte', dataConvert);
-
-      //   const dataParse: ISensorDataPost = parseSensorData(dataConvert);
-      //   console.log('data recive:::::', dataParse);
-
-      //   // Sauvegarder les données dans la base de données
-      //   await this.prisma.sensorDatas.create({
-      //     data: dataParse,
-      //   });
-
-      //   // Envoyer les données aux clients via WebSocket
-      //   this.socketGateway.sendSensorData(dataParse);
-      // }
+    const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
+    parser.on('data', async (data: any) => {
       try {
-        buffer += data.toString();
+        // buffer += data.toString();
 
-        if (buffer.includes('\n')) {
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
-          for (const line of lines) {
-            console.log('data received:', line);
-            // const dataParse: ISensorDataPost = parseSensorData(line.trim());
-            // console.log('parsed data:', dataParse);
-            // await this.prisma.sensorDatas.create({
-            //   data: dataParse,
-            // });
-            // this.socketGateway.sendSensorData(dataParse);
-          }
-        }
+        console.log('Data received:', data);
+        // if (buffer.includes('\n')) {
+        //   const lines = buffer.split('\n');
+        //   buffer = lines.pop() || '';
+        //   for (const line of lines) {
+        //     console.log('data received:', line);
+        //     // const dataParse: ISensorDataPost = parseSensorData(line.trim());
+        //     // console.log('parsed data:', dataParse);
+        //     // await this.prisma.sensorDatas.create({
+        //     //   data: dataParse,
+        //     // });
+        //     // this.socketGateway.sendSensorData(dataParse);
+        //   }
+        // }
       } catch (error) {
         console.error(
           'Erreur lors du traitement des données du port série:',
