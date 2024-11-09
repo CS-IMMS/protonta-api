@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { IMonitorData } from './core/utils/convertData';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
+import { RestartDto } from './dto/app.dto';
 
 @Controller()
 export class AppController {
@@ -16,8 +17,8 @@ export class AppController {
     return this.appService.healthCheck();
   }
   @Post('monitor-restart')
-  protendataRestart(@Body() status: boolean) {
-    return this.appService.resatartService(status);
+  protendataRestart(@Body() restartDto: RestartDto) {
+    return this.appService.resatartService(restartDto);
   }
   // @Get('/test')
   // getHellofffff(): string {

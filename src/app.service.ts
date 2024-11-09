@@ -8,9 +8,9 @@ import {
   IMonitorData,
   parseSensorData,
 } from './core/utils/convertData';
+import { RestartDto } from './dto/app.dto';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
-import { ProtentaStatusEnum } from './socket/notification.interface';
 import { SocketGateway } from './socket/socket.service';
 
 @Injectable()
@@ -33,17 +33,14 @@ export class AppService implements OnModuleInit {
       this.initializeSerialPort(this.portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
-      this.socketGateway.notification(
-        NotificationType.Moniteur,
-        String(ProtentaStatusEnum.inactive),
-      );
+      this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
     }
   }
   async healthCheck() {
     return 'hello world';
   }
-  async resatartService(status: boolean) {
-    if (status === true) {
+  async resatartService(data: RestartDto) {
+    if (data.status === true) {
       this.initializeSerialPort(this.portPath);
     }
     return { message: 'service restart' };
@@ -129,10 +126,7 @@ export class AppService implements OnModuleInit {
     this.port.on('close', () => {
       console.log('Port série fermé');
       this.stopInactivityCheck();
-      this.socketGateway.notification(
-        NotificationType.Moniteur,
-        String(ProtentaStatusEnum.inactive),
-      );
+      this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
     });
     // Gestion des erreurs
     this.port.on('error', (err) => {
@@ -160,9 +154,6 @@ export class AppService implements OnModuleInit {
     }
   }
   checkInactivity() {
-    this.socketGateway.notification(
-      NotificationType.Moniteur,
-      String(ProtentaStatusEnum.inactive),
-    );
+    this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
   }
 }

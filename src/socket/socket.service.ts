@@ -44,7 +44,7 @@ export class SocketGateway
     this.server.emit('monitorDataOnLive', this.sensorData);
   }
   notification(type: NotificationType, value: string) {
-    const notificationData = { type, status: value };
+    const notificationData = { type, value: value };
     this.server.emit('notifications', notificationData);
     this.prisma.notification.create({
       data: {
