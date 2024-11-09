@@ -92,6 +92,12 @@ export class AppService implements OnModuleInit {
           alert.type as NotificationType,
           alert.message,
         );
+        //  this.prisma.notification.create({
+        //   data: {
+        //     type: alert.type as NotificationType,
+        //     value: alert.value,
+        //   },
+        // });
       }
     });
   }
@@ -112,7 +118,7 @@ export class AppService implements OnModuleInit {
           this.socketGateway.sendSensorData(dataParse);
           await this.prisma.sensorDatas.create({ data: dataParse });
           this.sendSensorNotifications(dataParse);
-          this.restartInactivityCheck();
+          // this.restartInactivityCheck();
         } else {
           this.checkInactivity();
         }
@@ -133,7 +139,7 @@ export class AppService implements OnModuleInit {
       console.error('Erreur du port série:', err.message);
     });
 
-    this.startInactivityCheck();
+    // this.startInactivityCheck();
   }
   private startInactivityCheck() {
     if (!this.inactivityCheckInterval) {
