@@ -138,6 +138,8 @@ export class AppService implements OnModuleInit {
         this.logger.info('curent data:::', data);
         // Convertir et parser les données reçues
         const dataConvert = convertBufferData(data);
+        console.log('data converte', dataConvert);
+
         const dataParse: ISensorDataPost = parseSensorData(dataConvert);
         console.log('data recive:::::', dataParse);
 
