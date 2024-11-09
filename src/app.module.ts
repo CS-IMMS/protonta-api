@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from 'nestjs-pino';
+import { DailyAggregationService } from './Scheduling/agregations/dayAgregation';
+import { HourlyAggregationService } from './Scheduling/agregations/hourAgregation';
 import { MinuteAggregationService } from './Scheduling/agregations/minuteAgregration';
 import { DataGeneratorService } from './Scheduling/crons-jobs/dataSulator';
 import { AppController } from './app.controller';
@@ -40,6 +42,8 @@ import { SocketGateway } from './socket/socket.service';
     PrismaService,
     DataBaseService,
     MinuteAggregationService,
+    HourlyAggregationService,
+    DailyAggregationService,
   ],
 })
 export class AppModule {}

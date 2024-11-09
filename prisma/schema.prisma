@@ -80,44 +80,150 @@ model SensorDataForMinute {
   averageGyroX    Float?
   averageGyroY    Float?
   averageGyroZ    Float?
-  averageAccuracy Float?
 
   // Thresholds
-  averageSeuilHumidityMin Float?
-  averageSeuilHumidityMax Float?
-  averageSeuilTempMin     Float?
-  averageSeuilTempMax     Float?
-  averageSeuilLumMin      Float?
-  averageSeuilLumMax      Float?
-  averageSeuilPressionMin Float?
-  averageSeuilPressionMax Float?
-  averageSeuilCo2Min      Float?
-  averageSeuilCo2Max      Float?
+  lastSeuilHumidityMin Float?
+  lastSeuilHumidityMax Float?
+  lastSeuilTempMin     Float?
+  lastSeuilTempMax     Float?
+  lastSeuilLumMin      Float?
+  lastSeuilLumMax      Float?
+  lastSeuilPressionMin Float?
+  lastSeuilPressionMax Float?
+  lastSeuilCo2Min      Float?
+  lastSeuilCo2Max      Float?
+  lastMeanTemp         Float?
+  lastMeanHumidity     Float?
+  lastMeanLum          Float?
+  lastMeanPress        Float?
+  lastMeanCo2          Float?
 
-  // Mean values over the period
-  meanTemp     Float?
-  meanHumidity Float?
-  meanLum      Float?
-  meanPress    Float?
-  meanCo2      Float?
+  S1                   Int 
+  S2                   Int
+  S3                   Int
+  S4                   Int
+  S5                   Int
+  S6                   Int
+  S7                   Int
+  S8                   Int
+  S9                   Int
+  S10                  Int
+  S11                  Int
+  S12                  Int
+  S13                  Int
+  S14                  Int
+  S15                  Int
+  S16                  Int
+  momentFloraison      Boolean
+  originalDataId       String? // Reference to SensorData.id for traceability
+}
+model SensorDataForHour {
+  id                String   @id @default(uuid())
+  timestamp         DateTime @default(now())
+  startTimestamp    DateTime // Start of the aggregation period
+  endTimestamp      DateTime // End of the aggregation period
 
-  // Output states as [ActiveCount, InactiveCount]
-  S1              Int // [ActiveCount, InactiveCount]
-  S2              Int
-  S3              Int
-  S4              Int
-  S5              Int
-  S6              Int
-  S7              Int
-  S8              Int
-  S9              Int
-  S10             Int
-  S11             Int
-  S12             Int
-  S13             Int
-  S14             Int
-  S15             Int
-  S16             Int
-  momentFloraison Boolean
-  originalDataId  String? // Reference to SensorData.id for traceability
+  // Aggregated averages for hourly data
+  averageTemp       Float?
+  averageHumidity   Float?
+  averagePressure   Float?
+  averageLightA     Float?
+  averageSol        Float?
+  averageAccX       Float?
+  averageAccY       Float?
+  averageAccZ       Float?
+  averageIaq        Float?
+  averageGyroX      Float?
+  averageGyroY      Float?
+  averageGyroZ      Float?
+
+  // Last values for thresholds and mean fields
+  lastSeuilHumidityMin Float?
+  lastSeuilHumidityMax Float?
+  lastSeuilTempMin     Float?
+  lastSeuilTempMax     Float?
+  lastSeuilLumMin      Float?
+  lastSeuilLumMax      Float?
+  lastSeuilPressionMin Float?
+  lastSeuilPressionMax Float?
+  lastSeuilCo2Min      Float?
+  lastSeuilCo2Max      Float?
+  lastMeanTemp         Float?
+  lastMeanHumidity     Float?
+  lastMeanLum          Float?
+  lastMeanPress        Float?
+  lastMeanCo2          Float?
+
+  S1                Int
+  S2                Int
+  S3                Int
+  S4                Int
+  S5                Int
+  S6                Int
+  S7                Int
+  S8                Int
+  S9                Int
+  S10               Int
+  S11               Int
+  S12               Int
+  S13               Int
+  S14               Int
+  S15               Int
+  S16               Int
+  momentFloraison   Boolean
+}
+model SensorDataForDay {
+  id                String   @id @default(uuid())
+  timestamp         DateTime @default(now())
+  startTimestamp    DateTime // Start of the aggregation period
+  endTimestamp      DateTime // End of the aggregation period
+
+  // Aggregated averages for hourly data
+  averageTemp       Float?
+  averageHumidity   Float?
+  averagePressure   Float?
+  averageLightA     Float?
+  averageSol        Float?
+  averageAccX       Float?
+  averageAccY       Float?
+  averageAccZ       Float?
+  averageIaq        Float?
+  averageGyroX      Float?
+  averageGyroY      Float?
+  averageGyroZ      Float?
+
+  // Last values for thresholds and mean fields
+  lastSeuilHumidityMin Float?
+  lastSeuilHumidityMax Float?
+  lastSeuilTempMin     Float?
+  lastSeuilTempMax     Float?
+  lastSeuilLumMin      Float?
+  lastSeuilLumMax      Float?
+  lastSeuilPressionMin Float?
+  lastSeuilPressionMax Float?
+  lastSeuilCo2Min      Float?
+  lastSeuilCo2Max      Float?
+  lastMeanTemp         Float?
+  lastMeanHumidity     Float?
+  lastMeanLum          Float?
+  lastMeanPress        Float?
+  lastMeanCo2          Float?
+
+  S1                Int
+  S2                Int
+  S3                Int
+  S4                Int
+  S5                Int
+  S6                Int
+  S7                Int
+  S8                Int
+  S9                Int
+  S10               Int
+  S11               Int
+  S12               Int
+  S13               Int
+  S14               Int
+  S15               Int
+  S16               Int
+  momentFloraison   Boolean
 }
