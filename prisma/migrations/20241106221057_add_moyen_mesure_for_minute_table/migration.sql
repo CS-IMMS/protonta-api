@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "SensorDataForMinute" ADD COLUMN     "lastMeanCo2" DOUBLE PRECISION,
+ADD COLUMN     "lastMeanHumidity" DOUBLE PRECISION,
+ADD COLUMN     "lastMeanLum" DOUBLE PRECISION,
+ADD COLUMN     "lastMeanPress" DOUBLE PRECISION,
+ADD COLUMN     "lastMeanTemp" DOUBLE PRECISION;

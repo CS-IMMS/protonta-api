@@ -54,7 +54,7 @@ export class MinuteAggregationService {
     const averageGyroZ =
       data.reduce((sum, d) => sum + d.gyro_z, 0) / data.length;
     console.log('test', averageTemp);
-    
+
     // Calculer les pourcentages d'état actif/inactif pour S1 à S16
     const calculateDominantValue = (field: keyof (typeof data)[0]): number => {
       const countOf1 = data.filter((d) => d[field] === 1).length;
@@ -82,7 +82,29 @@ export class MinuteAggregationService {
     // Calculer la majorité de `MomentFloraison`
     const trueCount = data.filter((d) => d.MomentFloraison === true).length;
     const momentFloraison = trueCount > data.length / 2;
+    //calcul des seuil
+    const lastDataEntry = data.find(
+      (entry) => entry.timestamp.getSeconds() === endTime.getSeconds(),
+    );
+    console.log('lastDataEntry:::::', lastDataEntry);
 
+    const {
+      SeuilHumidity_min: SeuilHumidity_min,
+      SeuilHumidity_max: SeuilHumidity_max,
+      SeuilTemp_min: SeuilTemp_min,
+      SeuilTemp_max: SeuilTemp_max,
+      SeuilLum_min: SeuilLum_min,
+      SeuilLum_max: SeuilLum_max,
+      SeuilPression_min: SeuilPression_min,
+      SeuilPression_max: SeuilPression_max,
+      SeuilCo2_min: SeuilCo2_min,
+      SeuilCo2_max: SeuilCo2_max,
+      MeanTemp: MeanTemp,
+      MeanHumidity: MeanHumidity,
+      MeanLum: MeanLum,
+      MeanPress: MeanPress,
+      MeanCo2: MeanCo2,
+    } = lastDataEntry || data[0];
     // Enregistrer les données agrégées dans `SensorDataForMinute`
     await this.prisma.sensorDataForMinute.create({
       data: {
@@ -101,6 +123,21 @@ export class MinuteAggregationService {
         averageGyroX,
         averageGyroY,
         averageGyroZ,
+        lastSeuilTempMax: SeuilTemp_max,
+        lastSeuilTempMin: SeuilTemp_min,
+        lastSeuilHumidityMin: SeuilHumidity_min,
+        lastSeuilHumidityMax: SeuilHumidity_max,
+        lastSeuilLumMin: SeuilLum_min,
+        lastSeuilLumMax: SeuilLum_max,
+        lastSeuilPressionMin: SeuilPression_min,
+        lastSeuilPressionMax: SeuilPression_max,
+        lastSeuilCo2Min: SeuilCo2_min,
+        lastSeuilCo2Max: SeuilCo2_max,
+        lastMeanTemp: MeanTemp,
+        lastMeanHumidity: MeanHumidity,
+        lastMeanLum: MeanLum,
+        lastMeanPress: MeanPress,
+        lastMeanCo2: MeanCo2,
         S1,
         S2,
         S3,
