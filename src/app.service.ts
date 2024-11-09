@@ -132,24 +132,42 @@ export class AppService implements OnModuleInit {
     });
 
     this.port.on('data', async (data: any) => {
+      let buffer = '';
+      // try {
+      //   console.log('data recive...............', data);
+
+      //   this.logger.info('curent data:::', data);
+      //   // Convertir et parser les données reçues
+      //   const dataConvert = convertBufferData(data);
+      //   console.log('data converte', dataConvert);
+
+      //   const dataParse: ISensorDataPost = parseSensorData(dataConvert);
+      //   console.log('data recive:::::', dataParse);
+
+      //   // Sauvegarder les données dans la base de données
+      //   await this.prisma.sensorDatas.create({
+      //     data: dataParse,
+      //   });
+
+      //   // Envoyer les données aux clients via WebSocket
+      //   this.socketGateway.sendSensorData(dataParse);
+      // }
       try {
-        console.log('data recive...............', data);
+        buffer += data.toString();
 
-        this.logger.info('curent data:::', data);
-        // Convertir et parser les données reçues
-        const dataConvert = convertBufferData(data);
-        console.log('data converte', dataConvert);
-
-        const dataParse: ISensorDataPost = parseSensorData(dataConvert);
-        console.log('data recive:::::', dataParse);
-
-        // Sauvegarder les données dans la base de données
-        await this.prisma.sensorDatas.create({
-          data: dataParse,
-        });
-
-        // Envoyer les données aux clients via WebSocket
-        this.socketGateway.sendSensorData(dataParse);
+        if (buffer.includes('\n')) {
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            console.log('data received:', line);
+            const dataParse: ISensorDataPost = parseSensorData(line.trim());
+            console.log('parsed data:', dataParse);
+            await this.prisma.sensorDatas.create({
+              data: dataParse,
+            });
+            this.socketGateway.sendSensorData(dataParse);
+          }
+        }
       } catch (error) {
         console.error(
           'Erreur lors du traitement des données du port série:',
