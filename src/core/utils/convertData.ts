@@ -1,16 +1,5 @@
 import { ISensorDataPost } from 'src/monitor/interfaces/monitor.interface';
 
-const bufferData = {
-  type: 'Buffer',
-  data: [
-    55, 55, 55, 48, 52, 44, 49, 52, 57, 54, 44, 73, 49, 44, 51, 54, 52, 55, 44,
-    50, 55, 48, 57, 44, 57, 56, 55, 55, 44, 48, 44, 49, 57, 44, 50, 53, 44, 48,
-    44, 50, 52, 44, 48, 44, 48, 44, 48, 44, 48, 44, 48, 44, 48, 44, 48, 44, 49,
-    44, 48, 44, 48, 46, 48, 48, 44, 48, 46, 48, 48, 44, 48, 46, 48, 48, 44, 48,
-    46, 48, 48, 44, 48, 46, 48, 48, 44, 48, 46, 48, 48, 44, 52, 48, 54, 57, 44,
-    50, 48, 53, 50, 44, 50, 56, 48, 48, 56, 44, 57, 50, 49, 55, 44, 48, 13, 10,
-  ],
-};
 
 const convertBufferData = (bufferData: any): string => {
   // If bufferData is not already a Buffer, convert it to one

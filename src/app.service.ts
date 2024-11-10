@@ -8,7 +8,8 @@ import {
   IMonitorData,
   parseSensorData,
 } from './core/utils/convertData';
-import { RestartDto } from './dto/app.dto';
+import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
+import { sensorCodes, sensorManualAutoCodes } from './dto/utils';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
 import { SocketGateway } from './socket/socket.service';
@@ -33,16 +34,94 @@ export class AppService implements OnModuleInit {
       this.initializeSerialPort(this.portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
-      this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
+      this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
     }
   }
   async healthCheck() {
     return 'hello world';
   }
+  async sendCommande(commande: MonitorCommandeDto) {
+    const newCommande = await this.processToTransformData(commande);
+    await this.sendDataToProtenta(newCommande);
+    return { message: 'commende send', commande: newCommande };
+  }
+
+  async processToTransformData(commande: MonitorCommandeDto) {
+    let response = '';
+
+    // Traiter les états des capteurs S1 à S15
+    Object.entries(sensorCodes).forEach(([key, codes]) => {
+      console.log(commande[key]);
+
+      if (commande[key] !== undefined) {
+        const action = commande[key].toLowerCase();
+        if (key === 'S12') {
+          if (commande[key] === 'Deploy') {
+            response += `220,\n`;
+          } else if (commande[key] === 'Reactor') {
+            response += `221,\n`;
+          } else if (commande[key] === 'Arreter') {
+            response += `222,\n`;
+          }
+        } else if (codes[action] !== undefined) {
+          response += `${codes[action]},\n`;
+          console.log('code commande:::::', response);
+        }
+      }
+    });
+
+    const thresholds = [
+      commande.HumMin,
+      commande.HumMax,
+      commande.TemMin,
+      commande.TemMax,
+      commande.LumMin,
+      commande.LumMax,
+      commande.PressMin,
+      commande.PressMax,
+      commande.Co2Min,
+      commande.Co2Max,
+    ]
+      .filter((value) => value !== undefined)
+      .join(',');
+
+    if (thresholds) {
+      response += `126,${thresholds},\n`;
+    }
+
+    const pollinationParams = [
+      commande.PolStartTime
+        ? new Date(commande.PolStartTime).getFullYear()
+        : undefined,
+      commande.PolEndTime
+        ? new Date(commande.PolEndTime).getFullYear()
+        : undefined,
+      commande.Periode ? new Date(commande.Periode).getTime() : undefined,
+      commande.MomentFloraison,
+    ]
+      .filter((value) => value !== undefined)
+      .join(',');
+
+    if (pollinationParams) {
+      response += `127,${pollinationParams},\n`;
+    }
+
+    // Traiter les codes manuelAuto
+    Object.entries(sensorManualAutoCodes).forEach(([key, code]) => {
+      if (commande[`param${code}`] === true) {
+        // Vérifie que le paramètre est défini et actif
+        response += `${code},\n`;
+      }
+    });
+
+    return response;
+  }
+
   async resatartService(data: RestartDto) {
     if (data.status === true) {
       this.initializeSerialPort(this.portPath);
     }
+    this.socketGateway.notification(NotificationType.Moniteur, 'reactiver');
     return { message: 'service restart' };
   }
   async simulator(data: IMonitorData): Promise<ISensorDataPost> {
@@ -101,7 +180,28 @@ export class AppService implements OnModuleInit {
       }
     });
   }
-
+  private async sendDataToProtenta(commande: string) {
+    try {
+      // Send the formatted data to the Protenta via Serial Port
+      if (this.port && this.port.isOpen) {
+        this.port.write(commande, (err) => {
+          if (err) {
+            console.error(
+              "Erreur lors de l'envoi des données à la Protenta:",
+              err.message,
+            );
+          } else {
+            console.log('Données envoyées à la Protenta:', commande);
+          }
+        });
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'envoi des données formatées à la Protenta:",
+        error,
+      );
+    }
+  }
   private initializeSerialPort(portPath: string) {
     this.port = new SerialPort({
       path: portPath,
@@ -132,7 +232,7 @@ export class AppService implements OnModuleInit {
     this.port.on('close', () => {
       console.log('Port série fermé');
       this.stopInactivityCheck();
-      this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
+      this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
     });
     // Gestion des erreurs
     this.port.on('error', (err) => {
@@ -160,6 +260,6 @@ export class AppService implements OnModuleInit {
     }
   }
   checkInactivity() {
-    this.socketGateway.notification(NotificationType.Moniteur, 'inactive');
+    this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
   }
 }
