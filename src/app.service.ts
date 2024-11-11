@@ -64,7 +64,7 @@ export class AppService implements OnModuleInit {
             response += `222\n`;
           }
         } else if (codes[action] !== undefined) {
-          response += `${codes[action]},\n`;
+          response += `${codes[action]}\n`;
           console.log('code commande:::::', response);
         }
       }
