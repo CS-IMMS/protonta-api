@@ -66,7 +66,7 @@ export class AppService implements OnModuleInit {
           !commande.PolStartTime)
       ) {
         newCommande = await this.processToTransformData(commande);
-        await this.sendDataToProtenta(newCommande);
+        // await this.sendDataToProtenta(newCommande);
       }
       if (
         (commande.HumMin !== undefined && commande.HumMax !== undefined) ||
