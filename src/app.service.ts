@@ -54,26 +54,33 @@ export class AppService implements OnModuleInit {
           timestamp: 'desc',
         },
       });
-
-      console.log(data);
       if (
-        (commande.HumMin !== undefined && commande.HumMax !== undefined) ||
-        (commande.TemMin !== undefined && commande.TemMax !== undefined) ||
-        (commande.LumMin !== undefined && commande.LumMax !== undefined) ||
-        (commande.PressMin !== undefined && commande.PressMax !== undefined) ||
-        (commande.Co2Min !== undefined &&
-          commande.Co2Max !== undefined &&
-          !commande.PolStartTime)
+        commande.HumMin ||
+        commande.HumMax ||
+        commande.TemMin ||
+        commande.TemMax ||
+        commande.LumMin ||
+        commande.LumMax ||
+        commande.PressMin ||
+        commande.PressMax ||
+        commande.Co2Min ||
+        commande.Co2Max ||
+        !commande.PolStartTime
       ) {
         newCommande = await this.processToTransformData(commande);
         // await this.sendDataToProtenta(newCommande);
       }
       if (
-        (commande.HumMin !== undefined && commande.HumMax !== undefined) ||
-        (commande.TemMin !== undefined && commande.TemMax !== undefined) ||
-        (commande.LumMin !== undefined && commande.LumMax !== undefined) ||
-        (commande.PressMin !== undefined && commande.PressMax !== undefined) ||
-        (commande.Co2Min !== undefined && commande.Co2Max !== undefined)
+        commande.HumMin ||
+        commande.HumMax ||
+        commande.TemMin ||
+        commande.TemMax ||
+        commande.LumMin ||
+        commande.LumMax ||
+        commande.PressMin ||
+        commande.PressMax ||
+        commande.Co2Min ||
+        commande.Co2Max !== undefined
       ) {
         // Vérification et traitement des seuils
         const defaultThresholds = {
@@ -130,6 +137,8 @@ export class AppService implements OnModuleInit {
       }
 
       newCommande = await this.processToTransformData(commande);
+      console.log('newCommande::::', newCommande);
+
       await this.sendDataToProtenta(newCommande);
 
       return { message: 'Commande envoyée', commande: newCommande };
