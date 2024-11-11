@@ -57,11 +57,11 @@ export class AppService implements OnModuleInit {
         const action = commande[key].toLowerCase();
         if (key === 'S12') {
           if (commande[key] === 'Deploy') {
-            response += `220,\n`;
+            response += `220\n`;
           } else if (commande[key] === 'Reactor') {
-            response += `221,\n`;
+            response += `221\n`;
           } else if (commande[key] === 'Arreter') {
-            response += `222,\n`;
+            response += `222\n`;
           }
         } else if (codes[action] !== undefined) {
           response += `${codes[action]},\n`;
@@ -86,7 +86,7 @@ export class AppService implements OnModuleInit {
       .join(',');
 
     if (thresholds) {
-      response += `126,${thresholds},\n`;
+      response += `126,${thresholds}\n`;
     }
 
     const pollinationParams = [
@@ -103,14 +103,14 @@ export class AppService implements OnModuleInit {
       .join(',');
 
     if (pollinationParams) {
-      response += `127,${pollinationParams},\n`;
+      response += `127,${pollinationParams}\n`;
     }
 
     // Traiter les codes manuelAuto
     Object.entries(sensorManualAutoCodes).forEach(([key, code]) => {
       if (commande[`param${code}`] === true) {
         // Vérifie que le paramètre est défini et actif
-        response += `${code},\n`;
+        response += `${code}\n`;
       }
     });
 
