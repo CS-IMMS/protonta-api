@@ -79,7 +79,7 @@
 //       this.currentIndex = 1;
 //     }
 //     await this.prisma.sensorDatas.create({ data });
-//     this.SocketGateway.sendSensorData(data);
+//     // this.SocketGateway.sendSensorData(data);
 //     console.log('data send......');
 
 //     return data;

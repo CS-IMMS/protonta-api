@@ -59,7 +59,10 @@ model SensorDatas {
   S14               Int
   S15               Int
   S16               Int
-  MomentFloraison   Boolean
+  PolStartTime      String?
+  PolEndTime        String?
+  Periode           String?
+  MomentFloraison   Boolean @default(false)
   a1                Int      @default(0)
   a2                Int      @default(0)
   a3                Int      @default(0)
@@ -124,7 +127,10 @@ model SensorDataForMinute {
   S14             Int
   S15             Int
   S16             Int
-  momentFloraison Boolean
+   PolStartTime      String?
+  PolEndTime        String?
+  Periode           String?
+  MomentFloraison   Boolean @default(false)
   originalDataId  String? // Reference to SensorData.id for traceability
 }
 
@@ -181,7 +187,10 @@ model SensorDataForHour {
   S14             Int
   S15             Int
   S16             Int
-  momentFloraison Boolean
+   PolStartTime      String?
+  PolEndTime        String?
+  Periode           String?
+  MomentFloraison   Boolean @default(false)
 }
 
 model SensorDataForDay {
@@ -237,7 +246,10 @@ model SensorDataForDay {
   S14             Int
   S15             Int
   S16             Int
-  momentFloraison Boolean
+   PolStartTime      String?
+  PolEndTime        String?
+  Periode           String?
+  MomentFloraison   Boolean @default(false)
 }
 
 // model SensorDataCommande {

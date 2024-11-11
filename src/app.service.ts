@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { NotificationType } from '@prisma/client';
 import { PinoLogger } from 'nestjs-pino';
 import { ReadlineParser, SerialPort } from 'serialport';
@@ -41,9 +41,102 @@ export class AppService implements OnModuleInit {
     return 'hello world';
   }
   async sendCommande(commande: MonitorCommandeDto) {
-    const newCommande = await this.processToTransformData(commande);
-    await this.sendDataToProtenta(newCommande);
-    return { message: 'commende send', commande: newCommande };
+    try {
+      let newCommande = '';
+      const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+      const data = await this.prisma.sensorDatas.findFirst({
+        where: {
+          timestamp: {
+            gte: oneMinuteAgo,
+          },
+        },
+        orderBy: {
+          timestamp: 'desc',
+        },
+      });
+
+      console.log(data);
+      if (
+        (commande.HumMin !== undefined && commande.HumMax !== undefined) ||
+        (commande.TemMin !== undefined && commande.TemMax !== undefined) ||
+        (commande.LumMin !== undefined && commande.LumMax !== undefined) ||
+        (commande.PressMin !== undefined && commande.PressMax !== undefined) ||
+        (commande.Co2Min !== undefined &&
+          commande.Co2Max !== undefined &&
+          !commande.PolStartTime)
+      ) {
+        newCommande = await this.processToTransformData(commande);
+        await this.sendDataToProtenta(newCommande);
+      }
+      if (
+        (commande.HumMin !== undefined && commande.HumMax !== undefined) ||
+        (commande.TemMin !== undefined && commande.TemMax !== undefined) ||
+        (commande.LumMin !== undefined && commande.LumMax !== undefined) ||
+        (commande.PressMin !== undefined && commande.PressMax !== undefined) ||
+        (commande.Co2Min !== undefined && commande.Co2Max !== undefined)
+      ) {
+        // Vérification et traitement des seuils
+        const defaultThresholds = {
+          HumMin: data?.SeuilHumidity_min ?? 0,
+          HumMax: data?.SeuilHumidity_max ?? 0,
+          TemMin: data?.SeuilTemp_min ?? 0,
+          TemMax: data?.SeuilTemp_max ?? 0,
+          LumMin: data?.SeuilLum_min ?? 0,
+          LumMax: data?.SeuilLum_max ?? 0,
+          PressMin: data?.SeuilPression_min ?? 0,
+          PressMax: data?.SeuilPression_max ?? 0,
+          Co2Min: data?.SeuilCo2_min ?? 0,
+          Co2Max: data?.SeuilCo2_max ?? 0,
+        };
+
+        // Remplacer chaque seuil manquant dans `commande` par la valeur par défaut
+        for (const [key, defaultValue] of Object.entries(defaultThresholds)) {
+          if (commande[key] === undefined || commande[key] === null) {
+            commande[key] = defaultValue;
+          }
+        }
+      }
+      const ckeck = () => {
+        if (commande.PolStartTime !== undefined) {
+          console.log(
+            'commande.PolStartTime !== undefined',
+            commande.PolStartTime !== undefined,
+          );
+
+          return false;
+        } else {
+          return true;
+        }
+      };
+
+      if (ckeck() === false) {
+        const defaultValueForPollination = {
+          PolStartTime: data?.PolStartTime ?? 0,
+          PolEndTime: data?.PolEndTime ?? 0,
+          Periode: data?.Periode ?? 0,
+          MomentFloraison: data?.MomentFloraison ?? 0,
+        };
+
+        for (const [key, defaultValue] of Object.entries(
+          defaultValueForPollination,
+        )) {
+          if (commande[key] === undefined || commande[key] === null) {
+            commande[key] = defaultValue;
+          }
+        }
+      } else {
+        newCommande = await this.processToTransformData(commande);
+        await this.sendDataToProtenta(newCommande);
+      }
+
+      newCommande = await this.processToTransformData(commande);
+      await this.sendDataToProtenta(newCommande);
+
+      return { message: 'Commande envoyée', commande: newCommande };
+    } catch (error) {
+      console.error(error);
+      throw new BadRequestException(error);
+    }
   }
 
   async processToTransformData(commande: MonitorCommandeDto) {
@@ -90,16 +183,12 @@ export class AppService implements OnModuleInit {
     }
 
     const pollinationParams = [
-      commande.PolStartTime
-        ? new Date(commande.PolStartTime).getFullYear()
-        : undefined,
-      commande.PolEndTime
-        ? new Date(commande.PolEndTime).getFullYear()
-        : undefined,
-      commande.Periode ? new Date(commande.Periode).getTime() : undefined,
-      commande.MomentFloraison,
+      commande.PolStartTime ? new Date(commande.PolStartTime).getTime() : 0,
+      commande.PolEndTime ? new Date(commande.PolEndTime).getTime() : 0,
+      commande.Periode ? commande.Periode * 60 * 1000 : 0,
+      commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
-      .filter((value) => value !== undefined)
+      .filter((value) => value !== 0)
       .join(',');
 
     if (pollinationParams) {

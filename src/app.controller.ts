@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { IMonitorData } from './core/utils/convertData';
-import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
+import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 
 @Controller()
 export class AppController {
@@ -21,8 +21,12 @@ export class AppController {
     return this.appService.resatartService(restartDto);
   }
   @Post('send-commande')
-  updateCommade(@Body() commande: MonitorCommandeDto) {
-    return this.appService.sendCommande(commande);
+  async updateCommade(@Body() commande: MonitorCommandeDto) {
+    try {
+      return await this.appService.sendCommande(commande);
+    } catch (error) {
+      console.log(error);
+    }
   }
   // @Get('/test')
   // getHellofffff(): string {

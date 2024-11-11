@@ -1,11 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-    IsBoolean,
-    IsEnum,
-    IsIn,
-    IsNumber,
-    IsOptional,
-    IsString,
+  IsBoolean,
+  IsEnum,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
 } from 'class-validator';
 
 export class RestartDto {
@@ -316,8 +316,8 @@ export class MonitorCommandeDto {
 
   @ApiPropertyOptional({ description: 'Période de floraison (format string)' })
   @IsOptional()
-  @IsString()
-  Periode?: string;
+  @IsNumber()
+  Periode?: number;
 
   @ApiPropertyOptional({
     description: 'Moment de la floraison, doit être 0 ou 1',
