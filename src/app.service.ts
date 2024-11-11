@@ -126,7 +126,7 @@ export class AppService implements OnModuleInit {
         }
       } else {
         newCommande = await this.processToTransformData(commande);
-        await this.sendDataToProtenta(newCommande);
+        // await this.sendDataToProtenta(newCommande);
       }
 
       newCommande = await this.processToTransformData(commande);
