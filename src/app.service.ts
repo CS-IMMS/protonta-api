@@ -208,19 +208,31 @@ export class AppService implements OnModuleInit {
   }
   private async sendDataToProtenta(commande: string) {
     try {
-      // Send the formatted data to the Protenta via Serial Port
-      if (this.port && this.port.isOpen) {
+      console.log(
+        "Début d'envoi de la commande:",
+        commande,
+        'à',
+        new Date().toISOString(),
+      );
+      await new Promise<void>((resolve, reject) => {
         this.port.write(commande, (err) => {
           if (err) {
             console.error(
               "Erreur lors de l'envoi des données à la Protenta:",
               err.message,
             );
+            reject(err);
           } else {
-            console.log('Données envoyées à la Protenta:', commande);
+            console.log(
+              'Commande envoyée à la Protenta avec succès:',
+              commande,
+              'à',
+              new Date().toISOString(),
+            );
+            resolve();
           }
         });
-      }
+      });
     } catch (error) {
       console.error(
         "Erreur lors de l'envoi des données formatées à la Protenta:",
