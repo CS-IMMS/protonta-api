@@ -42,109 +42,71 @@ export class AppService implements OnModuleInit {
   }
   async sendCommande(commande: MonitorCommandeDto) {
     try {
-      let newCommande = '';
-      const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
+      const oneMinuteAgo = new Date(Date.now() - 10 * 1000);
       const data = await this.prisma.sensorDatas.findFirst({
-        where: {
-          timestamp: {
-            gte: oneMinuteAgo,
-          },
-        },
-        orderBy: {
-          timestamp: 'desc',
-        },
+        where: { timestamp: { gte: oneMinuteAgo } },
+        orderBy: { timestamp: 'desc' },
       });
-      if (
-        commande.HumMin ||
-        commande.HumMax ||
-        commande.TemMin ||
-        commande.TemMax ||
-        commande.LumMin ||
-        commande.LumMax ||
-        commande.PressMin ||
-        commande.PressMax ||
-        commande.Co2Min ||
-        commande.Co2Max ||
-        !commande.PolStartTime
-      ) {
-        newCommande = await this.processToTransformData(commande);
-        // await this.sendDataToProtenta(newCommande);
-      }
-      if (
-        commande.HumMin ||
-        commande.HumMax ||
-        commande.TemMin ||
-        commande.TemMax ||
-        commande.LumMin ||
-        commande.LumMax ||
-        commande.PressMin ||
-        commande.PressMax ||
-        commande.Co2Min ||
-        commande.Co2Max !== undefined
-      ) {
-        // Vérification et traitement des seuils
-        const defaultThresholds = {
-          HumMin: data?.SeuilHumidity_min ?? 0,
-          HumMax: data?.SeuilHumidity_max ?? 0,
-          TemMin: data?.SeuilTemp_min ?? 0,
-          TemMax: data?.SeuilTemp_max ?? 0,
-          LumMin: data?.SeuilLum_min ?? 0,
-          LumMax: data?.SeuilLum_max ?? 0,
-          PressMin: data?.SeuilPression_min ?? 0,
-          PressMax: data?.SeuilPression_max ?? 0,
-          Co2Min: data?.SeuilCo2_min ?? 0,
-          Co2Max: data?.SeuilCo2_max ?? 0,
-        };
 
-        // Remplacer chaque seuil manquant dans `commande` par la valeur par défaut
-        for (const [key, defaultValue] of Object.entries(defaultThresholds)) {
-          if (commande[key] === undefined || commande[key] === null) {
-            commande[key] = defaultValue;
-          }
-        }
-      }
-      const ckeck = () => {
-        if (commande.PolStartTime !== undefined) {
-          console.log(
-            'commande.PolStartTime !== undefined',
-            commande.PolStartTime !== undefined,
-          );
-
-          return false;
-        } else {
-          return true;
-        }
+      // Définir les valeurs par défaut pour les seuils et la pollinisation
+      const defaultThresholds = {
+        HumMin: data?.SeuilHumidity_min ?? 0,
+        HumMax: data?.SeuilHumidity_max ?? 0,
+        TemMin: data?.SeuilTemp_min ?? 0,
+        TemMax: data?.SeuilTemp_max ?? 0,
+        LumMin: data?.SeuilLum_min ?? 0,
+        LumMax: data?.SeuilLum_max ?? 0,
+        PressMin: data?.SeuilPression_min ?? 0,
+        PressMax: data?.SeuilPression_max ?? 0,
+        Co2Min: data?.SeuilCo2_min ?? 0,
+        Co2Max: data?.SeuilCo2_max ?? 0,
       };
 
-      if (ckeck() === false) {
-        const defaultValueForPollination = {
-          PolStartTime: data?.PolStartTime ?? 0,
-          PolEndTime: data?.PolEndTime ?? 0,
-          Periode: data?.Periode ?? 0,
-          MomentFloraison: data?.MomentFloraison ?? 0,
-        };
+      const defaultPollination = {
+        PolStartTime: data?.PolStartTime ?? 0,
+        PolEndTime: data?.PolEndTime ?? 0,
+        Periode: data?.Periode ?? 0,
+        MomentFloraison: data?.MomentFloraison ?? 0,
+      };
 
-        for (const [key, defaultValue] of Object.entries(
-          defaultValueForPollination,
-        )) {
-          if (commande[key] === undefined || commande[key] === null) {
-            commande[key] = defaultValue;
-          }
-        }
-      } else {
-        newCommande = await this.processToTransformData(commande);
-        // await this.sendDataToProtenta(newCommande);
+      // Vérifier si une des valeurs de seuils est présente dans `commande`
+      if (this.isAnyFieldPresent(commande, Object.keys(defaultThresholds))) {
+        this.applyDefaultValues(commande, defaultThresholds);
       }
 
-      newCommande = await this.processToTransformData(commande);
-      console.log('newCommande::::', newCommande);
+      // Vérifier si une des valeurs de pollinisation est présente dans `commande`
+      if (this.isAnyFieldPresent(commande, Object.keys(defaultPollination))) {
+        this.applyDefaultValues(commande, defaultPollination);
+      }
 
+      const newCommande = await this.processToTransformData(commande);
       await this.sendDataToProtenta(newCommande);
-
       return { message: 'Commande envoyée', commande: newCommande };
     } catch (error) {
       console.error(error);
       throw new BadRequestException(error);
+    }
+  }
+
+  // Fonction utilitaire pour vérifier si une des clés est présente
+  private isAnyFieldPresent(
+    commande: MonitorCommandeDto,
+    fields: string[],
+  ): boolean {
+    return fields.some(
+      (field) => commande[field] !== undefined && commande[field] !== null,
+    );
+  }
+
+  // Fonction utilitaire pour remplir les valeurs par défaut
+  private applyDefaultValues(
+    commande: MonitorCommandeDto,
+    defaults: Record<string, any>,
+  ) {
+    for (const [key, defaultValue] of Object.entries(defaults)) {
+      if (commande[key] === undefined || commande[key] === null) {
+        commande[key] = defaultValue;
+      }
     }
   }
 
