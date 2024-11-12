@@ -42,49 +42,15 @@ export class AppService implements OnModuleInit {
   }
   async sendCommande(commande: MonitorCommandeDto) {
     try {
-      const oneMinuteAgo = new Date(Date.now() - 10 * 1000);
-      const data = await this.prisma.sensorDatas.findFirst({
-        where: { timestamp: { gte: oneMinuteAgo } },
-        orderBy: { timestamp: 'desc' },
-      });
-
-      // Définir les valeurs par défaut pour les seuils et la pollinisation
-      const defaultThresholds = {
-        HumMin: data?.SeuilHumidity_min ?? 0,
-        HumMax: data?.SeuilHumidity_max ?? 0,
-        TemMin: data?.SeuilTemp_min ?? 0,
-        TemMax: data?.SeuilTemp_max ?? 0,
-        LumMin: data?.SeuilLum_min ?? 0,
-        LumMax: data?.SeuilLum_max ?? 0,
-        PressMin: data?.SeuilPression_min ?? 0,
-        PressMax: data?.SeuilPression_max ?? 0,
-        Co2Min: data?.SeuilCo2_min ?? 0,
-        Co2Max: data?.SeuilCo2_max ?? 0,
-      };
-
-      const defaultPollination = {
-        PolStartTime: data?.PolStartTime ?? 0,
-        PolEndTime: data?.PolEndTime ?? 0,
-        Periode: data?.Periode ?? 0,
-        MomentFloraison: data?.MomentFloraison ?? 0,
-      };
-
-      // Vérifier si une des valeurs de seuils est présente dans `commande`
-      if (this.isAnyFieldPresent(commande, Object.keys(defaultThresholds))) {
-        this.applyDefaultValues(commande, defaultThresholds);
-      }
-
-      // Vérifier si une des valeurs de pollinisation est présente dans `commande`
-      if (this.isAnyFieldPresent(commande, Object.keys(defaultPollination))) {
-        this.applyDefaultValues(commande, defaultPollination);
-      }
-
+      // Transformation et envoi de la commande
       const newCommande = await this.processToTransformData(commande);
       await this.sendDataToProtenta(newCommande);
+
+      console.log('Commande envoyée avec succès:', newCommande);
       return { message: 'Commande envoyée', commande: newCommande };
     } catch (error) {
-      console.error(error);
-      throw new BadRequestException(error);
+      console.error('Erreur lors de l’envoi de la commande:', error);
+      throw new BadRequestException("Erreur lors de l'envoi de la commande.");
     }
   }
 

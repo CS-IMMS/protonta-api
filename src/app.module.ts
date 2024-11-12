@@ -26,7 +26,7 @@ import { SocketGateway } from './socket/socket.service';
           options: {
             colorize: true,
             translateTime: true,
-            ignore: 'pid,hostname', // Supprime des infos moins utiles pour le dev
+            ignore: 'pid,hostname',
           },
         },
       },
