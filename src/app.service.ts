@@ -214,25 +214,33 @@ export class AppService implements OnModuleInit {
         'à',
         new Date().toISOString(),
       );
-      await new Promise<void>((resolve, reject) => {
-        this.port.write(commande, (err) => {
-          if (err) {
-            console.error(
-              "Erreur lors de l'envoi des données à la Protenta:",
-              err.message,
-            );
-            reject(err);
-          } else {
-            console.log(
-              'Commande envoyée à la Protenta avec succès:',
-              commande,
-              'à',
-              new Date().toISOString(),
-            );
-            resolve();
-          }
+
+      if (this.port.isOpen) {
+        const dataString = JSON.stringify(commande);
+
+        this.port.flush();
+
+        // Envoi des données avec une promesse pour assurer le suivi
+        await new Promise<void>((resolve, reject) => {
+          this.port.write(dataString + '\n', (err) => {
+            if (err) {
+              console.error('Error writing to serial port:', err.message);
+              reject(err);
+            } else {
+              console.log(
+                'Data sent:',
+                dataString,
+                'at',
+                new Date().toISOString(),
+              );
+              resolve();
+            }
+          });
         });
-      });
+        this.port.flush();
+      } else {
+        console.error('Le port série est fermé');
+      }
     } catch (error) {
       console.error(
         "Erreur lors de l'envoi des données formatées à la Protenta:",
