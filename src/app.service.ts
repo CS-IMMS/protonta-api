@@ -44,7 +44,7 @@ export class AppService implements OnModuleInit {
     try {
       // Transformation et envoi de la commande
       const newCommande = await this.processToTransformData(commande);
-      await this.sendDataToProtenta(newCommande);
+      this.sendDataToProtenta(newCommande);
 
       console.log('Commande envoyée avec succès:', newCommande);
       return { message: 'Commande envoyée', commande: newCommande };
