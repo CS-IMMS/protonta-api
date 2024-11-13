@@ -44,10 +44,13 @@ export class AppService implements OnModuleInit {
     try {
       // Transformation et envoi de la commande
       const newCommande = await this.processToTransformData(commande);
-      await this.sendDataToProtenta(newCommande);
-
-      console.log('Commande envoyée avec succès:', newCommande);
-      return { message: 'Commande envoyée', commande: newCommande };
+      await this.sendDataToProtenta(newCommande)
+        .then(() => {
+          return { message: 'Commande envoyée', commande: newCommande };
+        })
+        .catch((e) => {
+          console.log('erreur renvoyer par la protenta::::', e);
+        });
     } catch (error) {
       console.error('Erreur lors de l’envoi de la commande:', error);
       throw new BadRequestException("Erreur lors de l'envoi de la commande.");
@@ -64,7 +67,6 @@ export class AppService implements OnModuleInit {
     );
   }
 
-  // Fonction utilitaire pour remplir les valeurs par défaut
   private applyDefaultValues(
     commande: MonitorCommandeDto,
     defaults: Record<string, any>,
@@ -216,20 +218,19 @@ export class AppService implements OnModuleInit {
       );
 
       if (this.port.isOpen) {
-        const dataString = JSON.stringify(commande);
+        // const dataString = JSON.stringify(commande);
 
-        this.port.flush();
+        // this.port.flush();
 
-        // Envoi des données avec une promesse pour assurer le suivi
         await new Promise<void>((resolve, reject) => {
-          this.port.write(dataString + '\n', (err) => {
+          this.port.write(commande + '\n', (err) => {
             if (err) {
               console.error('Error writing to serial port:', err.message);
               reject(err);
             } else {
               console.log(
                 'Data sent:',
-                dataString,
+                commande,
                 'at',
                 new Date().toISOString(),
               );
@@ -237,7 +238,7 @@ export class AppService implements OnModuleInit {
             }
           });
         });
-        this.port.flush();
+        // this.port.flush();
       } else {
         console.error('Le port série est fermé');
       }
