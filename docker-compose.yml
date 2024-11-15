@@ -13,6 +13,7 @@ services:
       - "5432:5432"
     networks:
       - postgres-network
+    restart: always
 
   postgres-replica:
     image: postgres:13
@@ -27,6 +28,7 @@ services:
       - pgdata-replica:/var/lib/postgresql/data
     networks:
       - postgres-network
+    restart: always
 
 networks:
   postgres-network:
