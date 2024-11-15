@@ -1,0 +1,38 @@
+const sensorCodes = {
+  S1: { active: 101, inactive: 100 },
+  S2: { active: 111, inactive: 110 },
+  S3: { active: 121, inactive: 120 },
+  S4: { active: 131, inactive: 130 },
+  S5: { active: 141, inactive: 140 },
+  S6: { active: 151, inactive: 150 },
+  S7: { active: 161, inactive: 160 },
+  S8: { active: 171, inactive: 170 },
+  S9: { active: 181, inactive: 180 },
+  S10: { active: 191, inactive: 190 },
+  S11: { active: 201, inactive: 200 },
+  S13: { active: 231, inactive: 230 },
+  S12: { Deploy: 220, Reactor: 221, Arreter: 222 },
+  S14: { active: 241, inactive: 240 },
+  S15: { active: 251, inactive: 250 },
+  S16: { active: 261, inactive: 260 },
+};
+
+const sensorManualAutoCodes = {
+  S1: 300,
+  S2: 301,
+  S3: 302,
+  S4: 303,
+  S5: 304,
+  S6: 305,
+  S7: 306,
+  S8: 307,
+  S9: 308,
+  S10: 309,
+  S11: 310,
+  S12: 311,
+  S13: 313,
+  S14: 314,
+  S15: 315,
+  S16: 316,
+};
+export { sensorCodes, sensorManualAutoCodes };

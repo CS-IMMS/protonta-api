@@ -126,7 +126,7 @@ export class HourlyAggregationService {
         S14: lastEntry.S14,
         S15: lastEntry.S15,
         S16: lastEntry.S16,
-        momentFloraison: lastEntry.momentFloraison,
+        MomentFloraison: lastEntry.MomentFloraison,
       },
     });
   }

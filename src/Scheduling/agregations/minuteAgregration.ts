@@ -154,7 +154,7 @@ export class MinuteAggregationService {
         S14,
         S15,
         S16,
-        momentFloraison,
+        MomentFloraison: momentFloraison,
       },
     });
   }

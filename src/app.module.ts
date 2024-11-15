@@ -5,7 +5,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { DailyAggregationService } from './Scheduling/agregations/dayAgregation';
 import { HourlyAggregationService } from './Scheduling/agregations/hourAgregation';
 import { MinuteAggregationService } from './Scheduling/agregations/minuteAgregration';
-import { DataGeneratorService } from './Scheduling/crons-jobs/dataSulator';
+// import { DataGeneratorService } from './Scheduling/crons-jobs/dataSulator';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DataBaseModule } from './core/shared/dataBase/dataBase.module';
@@ -26,7 +26,7 @@ import { SocketGateway } from './socket/socket.service';
           options: {
             colorize: true,
             translateTime: true,
-            ignore: 'pid,hostname', // Supprime des infos moins utiles pour le dev
+            ignore: 'pid,hostname',
           },
         },
       },
@@ -38,7 +38,7 @@ import { SocketGateway } from './socket/socket.service';
   providers: [
     AppService,
     SocketGateway,
-    DataGeneratorService,
+    // DataGeneratorService,
     PrismaService,
     DataBaseService,
     MinuteAggregationService,
