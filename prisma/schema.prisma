@@ -62,7 +62,7 @@ model SensorDatas {
   PolStartTime      String?
   PolEndTime        String?
   Periode           String?
-  MomentFloraison   Boolean @default(false)
+  MomentFloraison   Boolean  @default(false)
   a1                Int      @default(0)
   a2                Int      @default(0)
   a3                Int      @default(0)
@@ -127,10 +127,10 @@ model SensorDataForMinute {
   S14             Int
   S15             Int
   S16             Int
-   PolStartTime      String?
-  PolEndTime        String?
-  Periode           String?
-  MomentFloraison   Boolean @default(false)
+  PolStartTime    String?
+  PolEndTime      String?
+  Periode         String?
+  MomentFloraison Boolean @default(false)
   originalDataId  String? // Reference to SensorData.id for traceability
 }
 
@@ -187,10 +187,10 @@ model SensorDataForHour {
   S14             Int
   S15             Int
   S16             Int
-   PolStartTime      String?
-  PolEndTime        String?
-  Periode           String?
-  MomentFloraison   Boolean @default(false)
+  PolStartTime    String?
+  PolEndTime      String?
+  Periode         String?
+  MomentFloraison Boolean @default(false)
 }
 
 model SensorDataForDay {
@@ -246,55 +246,63 @@ model SensorDataForDay {
   S14             Int
   S15             Int
   S16             Int
-   PolStartTime      String?
-  PolEndTime        String?
-  Periode           String?
-  MomentFloraison   Boolean @default(false)
+  PolStartTime    String?
+  PolEndTime      String?
+  Periode         String?
+  MomentFloraison Boolean @default(false)
 }
 
-// model SensorDataCommande {
-//   id        String   @id @default(uuid())
-//   timestamp DateTime @default(now())
-
-//   S0  Int
-//   S1  Int
-//   S2  Int
-//   S3  Int
-//   S4  Int
-//   S5  Int
-//   S6  Int
-//   S7  Int
-//   S8  Int
-//   S9  Int
-//   S10 Int
-//   S11 Int
-//   S12 Int
-//   S13 Int
-//   S14 Int
-//   S15 Int
-
-//   SeuilHumidity_min Float
-//   SeuilHumidity_max Float
-//   SeuilTemp_min     Float
-//   SeuilTemp_max     Float
-//   SeuilLum_min      Float
-//   SeuilLum_max      Float
-//   SeuilPression_min Float
-//   SeuilPression_max Float
-//   SeuilCo2_min      Float
-//   SeuilCo2_max      Float
-
-//   MomentFloraison      Boolean
-//   pollinationStartTime Int
-//   pollinationEndTime   Int
-
-//   year   Int
-//   month  Int
-//   day    Int
-//   hour   Int
-//   minute Int
-//   second Int
-// }
+model ComamandeToMonitor {
+  id              String   @id @default(uuid())
+  timestamp       DateTime @default(now())
+  S1              String?
+  S2              String?
+  S3              String?
+  S4              String?
+  S5              String?
+  S6              String?
+  S7              String?
+  S8              String?
+  S9              String?
+  S10             String?
+  S11             String?
+  S12             String?
+  S13             String?
+  S14             String?
+  S15             String?
+  S16             String?
+  HumMin          Int?
+  HumMax          Int?
+  TemMin          Int?
+  TemMax          Int?
+  LumMin          Int?
+  LumMax          Int?
+  PressMin        Int?
+  PressMax        Int?
+  Co2Min          Int?
+  Co2Max          Int?
+  param300        Boolean?
+  param301        Boolean?
+  param302        Boolean?
+  param303        Boolean?
+  param304        Boolean?
+  param305        Boolean?
+  param306        Boolean?
+  param307        Boolean?
+  param308        Boolean?
+  param309        Boolean?
+  param310        Boolean?
+  param311        Boolean?
+  param312        Boolean?
+  param313        Boolean?
+  param314        Boolean?
+  param315        Boolean?
+  param316        Boolean?
+  PolStartTime    String?
+  PolEndTime      String?
+  Periode         Int?
+  MomentFloraison Boolean?
+}
 
 model Notification {
   id        String           @id @default(uuid())

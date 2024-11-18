@@ -135,6 +135,13 @@ export class MonitorCommandeDto {
   @IsEnum(Status)
   S15?: Status;
 
+  @ApiPropertyOptional({
+    description: "État du capteur S16, peut être 'active' ou 'inactive'",
+  })
+  @IsOptional()
+  @IsEnum(Status)
+  S16?: Status;
+
   @ApiPropertyOptional({ description: "Minimum d'humidité en pourcentage" })
   @IsOptional()
   @IsNumber()

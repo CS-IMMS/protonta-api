@@ -6,6 +6,7 @@ import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
   convertBufferData,
   IMonitorData,
+  LogValueType,
   parseSensorData,
 } from './core/utils/convertData';
 import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
@@ -40,12 +41,109 @@ export class AppService implements OnModuleInit {
   async healthCheck() {
     return 'hello world';
   }
+  async getNotifications() {
+    const getAllNotifications = await this.prisma.notification.findMany({
+      orderBy: {
+        timestamp: 'desc',
+      },
+    });
+    return getAllNotifications;
+  }
+  async gatLogs(filter: {
+    startDate?: Date;
+    endDate?: Date;
+    field?: string;
+    value?: LogValueType;
+  }) {
+    const { startDate, endDate, field, value } = filter;
+    const conditions: any = {};
+
+    if (startDate || endDate) {
+      conditions.timestamp = {};
+      if (startDate) conditions.timestamp.gte = startDate;
+      if (endDate) conditions.timestamp.lte = endDate;
+    }
+
+    if (field && value) {
+      conditions[field] = value;
+    }
+
+    if (Object.keys(conditions).length === 0) {
+      return this.prisma.comamandeToMonitor.findMany();
+    }
+
+    return this.prisma.comamandeToMonitor.findMany({
+      // where: conditions,
+      orderBy: {
+        timestamp: 'desc',
+      },
+    });
+  }
+  async saveCommande(commande: MonitorCommandeDto) {
+    return await this.prisma.comamandeToMonitor.create({
+      data: {
+        S1: commande.S1 ?? null,
+        S2: commande.S2 ?? null,
+        S3: commande.S3 ?? null,
+        S4: commande.S4 ?? null,
+        S5: commande.S5 ?? null,
+        S6: commande.S6 ?? null,
+        S7: commande.S7 ?? null,
+        S8: commande.S8 ?? null,
+        S9: commande.S9 ?? null,
+        S10: commande.S10 ?? null,
+        S11: commande.S11 ?? null,
+        S12: commande.S12 ?? null,
+        S13: commande.S13 ?? null,
+        S14: commande.S14 ?? null,
+        S15: commande.S15 ?? null,
+        S16: commande.S16 ?? null,
+        HumMin: commande.HumMin ?? null,
+        HumMax: commande.HumMax ?? null,
+        TemMin: commande.TemMin ?? null,
+        TemMax: commande.TemMax ?? null,
+        LumMin: commande.LumMin ?? null,
+        LumMax: commande.LumMax ?? null,
+        PressMin: commande.PressMin ?? null,
+        PressMax: commande.PressMax ?? null,
+        Co2Min: commande.Co2Min ?? null,
+        Co2Max: commande.Co2Max ?? null,
+        param300: commande.param300 ?? null,
+        param301: commande.param301 ?? null,
+        param302: commande.param300 ?? null,
+        param303: commande.param300 ?? null,
+        param304: commande.param300 ?? null,
+        param305: commande.param300 ?? null,
+        param306: commande.param300 ?? null,
+        param307: commande.param300 ?? null,
+        param308: commande.param300 ?? null,
+        param309: commande.param300 ?? null,
+        param310: commande.param300 ?? null,
+        param311: commande.param300 ?? null,
+        param312: commande.param300 ?? null,
+        param313: commande.param300 ?? null,
+        param314: commande.param300 ?? null,
+        param315: commande.param300 ?? null,
+        param316: commande.param300 ?? null,
+        PolStartTime: commande.PolStartTime ?? null,
+        PolEndTime: commande.PolEndTime ?? null,
+        Periode: commande.Periode ?? null,
+        MomentFloraison:
+          commande.MomentFloraison === 1
+            ? true
+            : commande.MomentFloraison === 0
+              ? false
+              : null,
+      },
+    });
+  }
   async sendCommande(commande: MonitorCommandeDto) {
     try {
       // Transformation et envoi de la commande
       const newCommande = await this.processToTransformData(commande);
       await this.sendDataToProtenta(newCommande)
-        .then(() => {
+        .then(async () => {
+          await this.saveCommande(commande);
           return { message: 'Commande envoyée', commande: newCommande };
         })
         .catch((e) => {
@@ -199,12 +297,6 @@ export class AppService implements OnModuleInit {
           alert.type as NotificationType,
           alert.message,
         );
-        //  this.prisma.notification.create({
-        //   data: {
-        //     type: alert.type as NotificationType,
-        //     value: alert.value,
-        //   },
-        // });
       }
     });
   }
