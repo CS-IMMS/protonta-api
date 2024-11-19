@@ -1,6 +1,5 @@
 import { ISensorDataPost } from 'src/monitor/interfaces/monitor.interface';
 
-
 const convertBufferData = (bufferData: any): string => {
   // If bufferData is not already a Buffer, convert it to one
   const buffer = Buffer.isBuffer(bufferData)
@@ -93,5 +92,15 @@ interface IMonitorData {
   type: string;
   data: number[];
 }
+type LogValueType =
+  | 'active'
+  | 'inactive'
+  | 'true'
+  | 'false'
+  | 'reactor'
+  | 0
+  | 1
+  | boolean;
 
-export { convertBufferData, IMonitorData, parseSensorData };
+export { convertBufferData, IMonitorData, LogValueType, parseSensorData };
+

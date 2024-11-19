@@ -4,9 +4,12 @@ import {
   Controller,
   Get,
   Post,
+  Query,
 } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { ComamandeToMonitor, Notification } from '@prisma/client';
 import { AppService } from './app.service';
-import { IMonitorData } from './core/utils/convertData';
+import { IMonitorData, LogValueType } from './core/utils/convertData';
 import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 
@@ -22,6 +25,109 @@ export class AppController {
   getHellos(): Promise<string> {
     return this.appService.healthCheck();
   }
+  @Get('/notifications')
+  getNotifications(): Promise<Notification[]> {
+    return this.appService.getNotifications();
+  }
+  @Get('/logs')
+  @ApiOperation({ summary: 'Retrieve logs with optional filters' })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    type: String,
+    description:
+      'The start date for filtering logs (ISO format, e.g., 2024-11-01)',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    type: String,
+    description:
+      'The end date for filtering logs (ISO format, e.g., 2024-11-10)',
+  })
+  @ApiQuery({
+    name: 'field',
+    required: false,
+    type: String,
+    description: 'The field to filter logs by (e.g., S1, S2, etc.)',
+  })
+  @ApiQuery({
+    name: 'value',
+    required: false,
+    type: String,
+    enum: ['active', 'inactive', 'true', 'false', 'reactor', 0, 1],
+    description: 'The value to filter the specified field by',
+  })
+  @ApiBadRequestResponse({
+    description: 'Invalid field provided',
+  })
+  gatLogs(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('field') field?: string,
+    @Query('value') value?: LogValueType,
+  ): Promise<ComamandeToMonitor[]> {
+    if (field && !this.isValidField(field)) {
+      throw new BadRequestException(`Invalid field: ${field}`);
+    }
+    return this.appService.gatLogs({
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      field,
+      value,
+    });
+  }
+  private isValidField(field: string): boolean {
+    const validFields = [
+      'S1',
+      'S2',
+      'S3',
+      'S4',
+      'S5',
+      'S6',
+      'S7',
+      'S8',
+      'S9',
+      'S10',
+      'S11',
+      'S12',
+      'S13',
+      'S14',
+      'S15',
+      'S16',
+      'HumMin',
+      'HumMax',
+      'TemMin',
+      'TemMax',
+      'LumMin',
+      'LumMax',
+      'PressMin',
+      'PressMax',
+      'Co2Min',
+      'Co2Max',
+      'param300',
+      'param301',
+      'param302',
+      'param303',
+      'param304',
+      'param305',
+      'param306',
+      'param307',
+      'param308',
+      'param309',
+      'param310',
+      'param311',
+      'param313',
+      'param314',
+      'param315',
+      'param316',
+      'PolStartTime',
+      'PolEndTime',
+      'Periode',
+      'MomentFloraison',
+    ];
+    return validFields.includes(field);
+  }
   @Post('monitor-restart')
   protendataRestart(@Body() restartDto: RestartDto) {
     return this.appService.resatartService(restartDto);
@@ -34,7 +140,6 @@ export class AppController {
         Object.keys(commande).length,
       );
 
-      // Vérifier si la commande est vide
       if (Object.keys(commande).length === 0) {
         throw new BadRequestException('Aucune commande passée.');
       }
