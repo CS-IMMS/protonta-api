@@ -14,18 +14,17 @@ import {
 } from '@nestjs/swagger';
 import { ComamandeToMonitor } from '@prisma/client';
 import { AppService } from './app.service';
-import { IMonitorData, LogValueType } from './core/utils/convertData';
+import { LogValueType } from './core/utils/convertData';
 import { MonitorCommandeDto, NotificationDto, RestartDto } from './dto/app.dto';
-import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post()
-  getHello(@Body() data: IMonitorData): Promise<ISensorDataPost> {
-    return this.appService.simulator(data);
-  }
+  // @Post()
+  // getHello(@Body() data: IMonitorData): Promise<ISensorDataPost> {
+  //   return this.appService.simulator(data);
+  // }
   @Get()
   getHellos(): Promise<string> {
     return this.appService.healthCheck();

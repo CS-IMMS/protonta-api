@@ -1,5 +1,3 @@
-import { ISensorDataPost } from 'src/monitor/interfaces/monitor.interface';
-
 const convertBufferData = (bufferData: any): string => {
   // If bufferData is not already a Buffer, convert it to one
   const buffer = Buffer.isBuffer(bufferData)
@@ -14,7 +12,7 @@ const parseData = (data: string) => {
   const date = new Date(new Date().getTime() + Number(data) * 1000);
   return date.toISOString();
 };
-const parseSensorData = (dataString: string): ISensorDataPost => {
+const parseSensorDataCapteur = (dataString: string) => {
   const dataArray = dataString.split(',');
   console.log(dataArray[0]);
   const date = new Date(new Date().getTime() + Number(dataArray[0]) * 1000);
@@ -36,8 +34,14 @@ const parseSensorData = (dataString: string): ISensorDataPost => {
     gyro_y: Number(dataArray[13]),
     gyro_z: Number(dataArray[14]),
     accuracy: Number(dataArray[15]),
-
-    // Threshold values
+  };
+};
+const parseSensorDataMonitor = (dataString: string) => {
+  const dataArray = dataString.split(',');
+  console.log(dataArray[0]);
+  const date = new Date(new Date().getTime() + Number(dataArray[0]) * 1000);
+  console.log(date.toISOString());
+  return {
     SeuilHumidity_min: Number(dataArray[16]),
     SeuilHumidity_max: Number(dataArray[17]),
     SeuilTemp_min: Number(dataArray[18]),
@@ -85,6 +89,26 @@ const parseSensorData = (dataString: string): ISensorDataPost => {
     a8: Number(dataArray[55]),
     a9: Number(dataArray[56]),
     a10: Number(dataArray[57]),
+    pollinationStartTime: parseData(dataArray[58]),
+    pollinationEndTime: parseData(dataArray[59]),
+    PeriodePol: parseData(dataArray[60]),
+    ManuelAutoS1: Number(dataArray[61]),
+    ManuelAutoS2: Number(dataArray[62]),
+    ManuelAutoS3: Number(dataArray[63]),
+    ManuelAutoS4: Number(dataArray[64]),
+    ManuelAutoS5: Number(dataArray[65]),
+    ManuelAutoS6: Number(dataArray[66]),
+    ManuelAutoS7: Number(dataArray[67]),
+    ManuelAutoS8: Number(dataArray[68]),
+    ManuelAutoS9: Number(dataArray[69]),
+    ManuelAutoS10: Number(dataArray[70]),
+    ManuelAutoS11: Number(dataArray[71]),
+    ManuelAutoS12: Number(dataArray[72]),
+    ManuelAutoS13: Number(dataArray[73]),
+    ManuelAutoS14: Number(dataArray[74]),
+    ManuelAutoS15: Number(dataArray[75]),
+    ManuelAutoS16: Number(dataArray[76]),
+    MonitorTime: String(dataArray[77]),
   };
 };
 
@@ -102,5 +126,11 @@ type LogValueType =
   | 1
   | boolean;
 
-export { convertBufferData, IMonitorData, LogValueType, parseSensorData };
+export {
+  IMonitorData,
+  LogValueType,
+  convertBufferData,
+  parseSensorDataCapteur,
+  parseSensorDataMonitor
+};
 
