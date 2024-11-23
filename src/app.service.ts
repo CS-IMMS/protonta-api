@@ -4,10 +4,9 @@ import { PinoLogger } from 'nestjs-pino';
 import { ReadlineParser, SerialPort } from 'serialport';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
-  convertBufferData,
-  IMonitorData,
   LogValueType,
-  parseSensorData,
+  parseSensorDataCapteur,
+  parseSensorDataMonitor,
 } from './core/utils/convertData';
 import { MonitorCommandeDto, NotificationDto, RestartDto } from './dto/app.dto';
 import { sensorCodes, sensorManualAutoCodes } from './dto/utils';
@@ -41,7 +40,7 @@ export class AppService implements OnModuleInit {
   async healthCheck() {
     return 'hello world';
   }
-  async getNotifications(
+  public async getNotifications(
     page: number,
     limit: number,
   ): Promise<{
@@ -73,7 +72,7 @@ export class AppService implements OnModuleInit {
     };
   }
 
-  async gatLogs(filter: {
+  public async gatLogs(filter: {
     startDate?: Date;
     endDate?: Date;
     field?: string;
@@ -161,9 +160,8 @@ export class AppService implements OnModuleInit {
       },
     });
   }
-  async sendCommande(commande: MonitorCommandeDto) {
+  public async sendCommande(commande: MonitorCommandeDto) {
     try {
-      // Transformation et envoi de la commande
       const newCommande = await this.processToTransformData(commande);
       await this.sendDataToProtenta(newCommande)
         .then(async () => {
@@ -267,21 +265,15 @@ export class AppService implements OnModuleInit {
     return response;
   }
 
-  async resatartService(data: RestartDto) {
+  public async resatartService(data: RestartDto) {
+    const date = Date.now();
+    const commande = `128,${date}`;
     if (data.status === true) {
       this.initializeSerialPort(this.portPath);
+      this.sendDataToProtenta(commande);
     }
     this.socketGateway.notification(NotificationType.Moniteur, 'reactiver');
     return { message: 'service restart' };
-  }
-  async simulator(data: IMonitorData): Promise<ISensorDataPost> {
-    let dataConvert = '';
-    let dataParse!: ISensorDataPost;
-    if (data) {
-      dataConvert = convertBufferData(data);
-      dataParse = parseSensorData(dataConvert);
-    }
-    return dataParse;
   }
   private async findSerialPort(): Promise<string | null> {
     const ports = await SerialPort.list();
@@ -334,10 +326,6 @@ export class AppService implements OnModuleInit {
       );
 
       if (this.port.isOpen) {
-        // const dataString = JSON.stringify(commande);
-
-        // this.port.flush();
-
         await new Promise<void>((resolve, reject) => {
           this.port.write(commande + '\n', (err) => {
             if (err) {
@@ -375,8 +363,15 @@ export class AppService implements OnModuleInit {
       try {
         if (data) {
           this.lastDataReceivedTime = Date.now();
+          const dataArray = data.trim().split(',');
+          let dataParse: any;
           // this.socketGateway.notification(ProtentaStatusEnum.active);
-          const dataParse: ISensorDataPost = parseSensorData(data.trim());
+          if (dataArray[0] === 'c') {
+            dataParse = parseSensorDataCapteur(data.trim());
+          }
+          if (dataArray[0] === 'p') {
+            dataParse = parseSensorDataMonitor(data.trim());
+          }
           console.log('Parsed data:', dataParse);
           this.socketGateway.sendSensorData(dataParse);
           await this.prisma.sensorDatas.create({ data: dataParse });

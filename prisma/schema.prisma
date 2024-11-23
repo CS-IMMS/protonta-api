@@ -10,69 +10,89 @@ datasource db {
 }
 
 model SensorDatas {
-  id                String   @id @default(uuid())
-  timestamp         DateTime @default(now())
-  latest            String
-  elapsed           String
-  localName         String
-  temperature       Float
-  humidity          Float
-  pressure          Float
-  light_A           Float
-  sol               Float
-  acc_x             Float
-  acc_y             Float
-  acc_z             Float
-  iaq               Float
-  gyro_x            Float
-  gyro_y            Float
-  gyro_z            Float
-  accuracy          Int
-  SeuilHumidity_min Float
-  SeuilHumidity_max Float
-  SeuilTemp_min     Float
-  SeuilTemp_max     Float
-  SeuilLum_min      Float
-  SeuilLum_max      Float
-  SeuilPression_min Float
-  SeuilPression_max Float
-  SeuilCo2_min      Float
-  SeuilCo2_max      Float
-  MeanTemp          Float
-  MeanHumidity      Float
-  MeanLum           Float
-  MeanPress         Float
-  MeanCo2           Float
-  S1                Int
-  S2                Int
-  S3                Int
-  S4                Int
-  S5                Int
-  S6                Int
-  S7                Int
-  S8                Int
-  S9                Int
-  S10               Int
-  S11               Int
-  S12               Int
-  S13               Int
-  S14               Int
-  S15               Int
-  S16               Int
-  PolStartTime      String?
-  PolEndTime        String?
-  Periode           String?
-  MomentFloraison   Boolean  @default(false)
-  a1                Int      @default(0)
-  a2                Int      @default(0)
-  a3                Int      @default(0)
-  a4                Int      @default(0)
-  a5                Int      @default(0)
-  a6                Int      @default(0)
-  a7                Int      @default(0)
-  a8                Int      @default(0)
-  a9                Int      @default(0)
-  a10               Int      @default(0)
+  id                   String   @id @default(uuid())
+  timestamp            DateTime @default(now())
+  latest               String?
+  elapsed              String?
+  localName            String?
+  temperature          Float?
+  humidity             Float?
+  pressure             Float?
+  light_A              Float?
+  sol                  Float?
+  acc_x                Float?
+  acc_y                Float?
+  acc_z                Float?
+  iaq                  Float?
+  gyro_x               Float?
+  gyro_y               Float?
+  gyro_z               Float?
+  accuracy             Int?
+  SeuilHumidity_min    Float?
+  SeuilHumidity_max    Float?
+  SeuilTemp_min        Float?
+  SeuilTemp_max        Float?
+  SeuilLum_min         Float?
+  SeuilLum_max         Float?
+  SeuilPression_min    Float?
+  SeuilPression_max    Float?
+  SeuilCo2_min         Float?
+  SeuilCo2_max         Float?
+  MeanTemp             Float?
+  MeanHumidity         Float?
+  MeanLum              Float?
+  MeanPress            Float?
+  MeanCo2              Float?
+  S1                   Int?
+  S2                   Int?
+  S3                   Int?
+  S4                   Int?
+  S5                   Int?
+  S6                   Int?
+  S7                   Int?
+  S8                   Int?
+  S9                   Int?
+  S10                  Int?
+  S11                  Int?
+  S12                  Int?
+  S13                  Int?
+  S14                  Int?
+  S15                  Int?
+  S16                  Int?
+  PolStartTime         String?
+  PolEndTime           String?
+  Periode              String?
+  MomentFloraison      Boolean? @default(false)
+  a1                   Int      @default(0)
+  a2                   Int      @default(0)
+  a3                   Int      @default(0)
+  a4                   Int      @default(0)
+  a5                   Int      @default(0)
+  a6                   Int      @default(0)
+  a7                   Int      @default(0)
+  a8                   Int      @default(0)
+  a9                   Int      @default(0)
+  a10                  Int      @default(0)
+  pollinationStartTime String?
+  pollinationEndTime   String?
+  PeriodePol           String?
+  ManuelAutoS1         Int      @default(0)
+  ManuelAutoS2         Int      @default(0)
+  ManuelAutoS3         Int      @default(0)
+  ManuelAutoS4         Int      @default(0)
+  ManuelAutoS5         Int      @default(0)
+  ManuelAutoS6         Int      @default(0)
+  ManuelAutoS7         Int      @default(0)
+  ManuelAutoS8         Int      @default(0)
+  ManuelAutoS9         Int      @default(0)
+  ManuelAutoS10        Int      @default(0)
+  ManuelAutoS11        Int      @default(0)
+  ManuelAutoS12        Int      @default(0)
+  ManuelAutoS13        Int      @default(0)
+  ManuelAutoS14        Int      @default(0)
+  ManuelAutoS15        Int      @default(0)
+  ManuelAutoS16        Int      @default(0)
+  MonitorTime          String?
 }
 
 model SensorDataForMinute {
