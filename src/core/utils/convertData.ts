@@ -14,9 +14,6 @@ const parseData = (data: string) => {
 };
 const parseSensorDataCapteur = (dataString: string) => {
   const dataArray = dataString.split(',');
-  console.log(dataArray[0]);
-  const date = new Date(new Date().getTime() + Number(dataArray[0]) * 1000);
-  console.log(date.toISOString());
   return {
     latest: parseData(dataArray[1]),
     elapsed: parseData(dataArray[2]),
@@ -38,9 +35,6 @@ const parseSensorDataCapteur = (dataString: string) => {
 };
 const parseSensorDataMonitor = (dataString: string) => {
   const dataArray = dataString.split(',');
-  console.log(dataArray[0]);
-  const date = new Date(new Date().getTime() + Number(dataArray[0]) * 1000);
-  console.log(date.toISOString());
   return {
     SeuilHumidity_min: Number(dataArray[1]),
     SeuilHumidity_max: Number(dataArray[2]),
