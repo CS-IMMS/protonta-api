@@ -362,20 +362,7 @@ export class AppService implements OnModuleInit {
     parser.on('data', async (data: any) => {
       try {
         if (data) {
-          this.lastDataReceivedTime = Date.now();
-          const dataArray = data.trim().split(',');
-          let dataParse: any;
-          // this.socketGateway.notification(ProtentaStatusEnum.active);
-          if (dataArray[0] === 'c') {
-            dataParse = parseSensorDataCapteur(data.trim());
-          } else if (dataArray[0] === 'p') {
-            dataParse = parseSensorDataMonitor(data.trim());
-          }
-          console.log('Parsed data:', dataParse);
-          this.socketGateway.sendSensorData(dataParse);
-          await this.prisma.sensorDatas.create({ data: dataParse });
-          this.sendSensorNotifications(dataParse);
-          // this.restartInactivityCheck();
+          this.handleSerialData(data);
         } else {
           this.checkInactivity();
         }
@@ -397,6 +384,29 @@ export class AppService implements OnModuleInit {
     });
 
     // this.startInactivityCheck();
+  }
+  private async handleSerialData(data: string): Promise<void> {
+    this.lastDataReceivedTime = Date.now();
+    const dataArray = data.trim().split(',');
+    try {
+      let parsedData: any;
+
+      if (dataArray[0] === 'c') {
+        parsedData = parseSensorDataCapteur(data.trim());
+      } else if (dataArray[0] === 'p') {
+        parsedData = parseSensorDataMonitor(data.trim());
+      }
+
+      if (parsedData) {
+        this.socketGateway.sendSensorData(parsedData);
+        await this.prisma.sensorDatas.create({ data: parsedData });
+        this.sendSensorNotifications(parsedData);
+      } else {
+        console.warn('Aucune donnée valide à traiter.');
+      }
+    } catch (error) {
+      console.error('Erreur lors de l’analyse des données reçues :', error);
+    }
   }
   private startInactivityCheck() {
     if (!this.inactivityCheckInterval) {
