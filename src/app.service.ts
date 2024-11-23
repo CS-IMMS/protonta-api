@@ -354,7 +354,7 @@ export class AppService implements OnModuleInit {
       path: portPath,
       baudRate: 115200,
     });
-    const date = Math.floor(Date.now() / 1000);
+    const date = Math.floor((Date.now() + 3600 * 1000) / 1000);
     const commande = `128,${date.toString()}`;
     setTimeout(() => {
       if (this.port) {
