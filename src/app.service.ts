@@ -266,7 +266,7 @@ export class AppService implements OnModuleInit {
   }
 
   public async resatartService(data: RestartDto) {
-    const date = Date.now();
+    const date = Math.floor(Date.now() / 1000);
     const commande = `128,${date}`;
     if (data.status === true) {
       this.initializeSerialPort(this.portPath);
