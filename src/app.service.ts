@@ -357,7 +357,7 @@ export class AppService implements OnModuleInit {
       path: portPath,
       baudRate: 115200,
     });
-    const date = Date.now();
+    const date = Math.floor(Date.now() / 1000);
     const commande = `128,${date}`;
     this.sendDataToProtenta(commande);
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
