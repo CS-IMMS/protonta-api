@@ -326,7 +326,8 @@ export class AppService implements OnModuleInit {
       const commanded = `128,${date.toString()}\n`;
       console.log(
         "Début d'envoi de la commande:",
-        commande + commanded,
+        commande + ',',
+        commanded,
         'à',
         new Date().toISOString(),
       );
