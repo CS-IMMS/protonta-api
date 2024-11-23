@@ -266,11 +266,8 @@ export class AppService implements OnModuleInit {
   }
 
   public async resatartService(data: RestartDto) {
-    const date = Math.floor(Date.now() / 1000);
-    const commande = `128,${date}`;
     if (data.status === true) {
       this.initializeSerialPort(this.portPath);
-      this.sendDataToProtenta(commande);
     }
     this.socketGateway.notification(NotificationType.Moniteur, 'reactiver');
     return { message: 'service restart' };
@@ -359,7 +356,10 @@ export class AppService implements OnModuleInit {
     });
     const date = Math.floor(Date.now() / 1000);
     const commande = `128,${date}`;
-    this.sendDataToProtenta(commande);
+    if (commande) {
+      this.sendDataToProtenta(commande);
+    }
+
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     parser.on('data', async (data: any) => {
       try {
@@ -380,7 +380,7 @@ export class AppService implements OnModuleInit {
       this.stopInactivityCheck();
       this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
     });
-    // Gestion des erreurs
+
     this.port.on('error', (err) => {
       console.error('Erreur du port série:', err.message);
     });
