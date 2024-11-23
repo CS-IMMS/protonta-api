@@ -3,13 +3,18 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationError } from 'class-validator';
 import helmet from 'helmet';
+import { Logger } from 'nestjs-pino';
 import * as responseTime from 'response-time';
 import { AppModule } from './app.module';
 import { validationError } from './core/shared/filters/validation.errors';
-import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.use((req, res, next) => {
+    res.header('Cross-Origin-Opener-Policy', 'unsafe-none');
+    res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
+    next();
+  });
   app.use(helmet());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,6 +28,7 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
     allowedHeaders: 'Content-Type, Authorization, sentry-trace',
+    credentials: false,
   });
   const config = new DocumentBuilder()
     .setTitle('Sensor API')
@@ -30,10 +36,7 @@ async function bootstrap() {
       'API for managing sensor data, including WebSocket connections',
     )
     .setVersion('1.0')
-    .addTag(
-      'WebSocket',
-      'Use ws://localhost:3001/sensor for WebSocket connections',
-    )
+    .addServer(`${process.env.IP_PROTENTA}:${process.env.PORT}`)
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

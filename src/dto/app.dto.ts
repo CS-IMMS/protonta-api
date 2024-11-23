@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { NotificationType } from '@prisma/client';
 import {
   IsBoolean,
   IsEnum,
@@ -333,4 +334,10 @@ export class MonitorCommandeDto {
   @IsNumber()
   @IsIn([0, 1], { message: 'MomentFloraison doit être 0 ou 1.' })
   MomentFloraison?: number;
+}
+export interface NotificationDto {
+  id: string;
+  timestamp: Date;
+  type: NotificationType;
+  value: string;
 }

@@ -6,11 +6,16 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
-import { ComamandeToMonitor, Notification } from '@prisma/client';
+import {
+  ApiBadRequestResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
+import { ComamandeToMonitor } from '@prisma/client';
 import { AppService } from './app.service';
 import { IMonitorData, LogValueType } from './core/utils/convertData';
-import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
+import { MonitorCommandeDto, NotificationDto, RestartDto } from './dto/app.dto';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 
 @Controller()
@@ -25,9 +30,51 @@ export class AppController {
   getHellos(): Promise<string> {
     return this.appService.healthCheck();
   }
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'Le numéro de la page à récupérer',
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    type: Number,
+    description: 'Le nombre d’éléments par page',
+    required: false,
+    example: 100,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Retourne les notifications paginées',
+    schema: {
+      type: 'object',
+      properties: {
+        // data: NotificationDto[],
+        total: { type: 'number', example: 1000 },
+        page: { type: 'number', example: 1 },
+        pages: { type: 'number', example: 10 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Requête invalide (paramètres incorrects)',
+  })
   @Get('/notifications')
-  getNotifications(): Promise<Notification[]> {
-    return this.appService.getNotifications();
+  async getNotifications(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '100',
+  ): Promise<{
+    data: NotificationDto[];
+    total: number;
+    page: number;
+    pages: number;
+  }> {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 100;
+
+    return this.appService.getNotifications(pageNumber, limitNumber);
   }
   @Get('/logs')
   @ApiOperation({ summary: 'Retrieve logs with optional filters' })
