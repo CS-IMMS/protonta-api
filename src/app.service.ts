@@ -9,7 +9,7 @@ import {
   LogValueType,
   parseSensorData,
 } from './core/utils/convertData';
-import { MonitorCommandeDto, RestartDto } from './dto/app.dto';
+import { MonitorCommandeDto, NotificationDto, RestartDto } from './dto/app.dto';
 import { sensorCodes, sensorManualAutoCodes } from './dto/utils';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
@@ -41,14 +41,38 @@ export class AppService implements OnModuleInit {
   async healthCheck() {
     return 'hello world';
   }
-  async getNotifications() {
-    const getAllNotifications = await this.prisma.notification.findMany({
-      orderBy: {
-        timestamp: 'desc',
-      },
-    });
-    return getAllNotifications;
+  async getNotifications(
+    page: number,
+    limit: number,
+  ): Promise<{
+    data: NotificationDto[];
+    total: number;
+    page: number;
+    pages: number;
+  }> {
+    const offset = (page - 1) * limit;
+
+    const [notifications, total] = await Promise.all([
+      this.prisma.notification.findMany({
+        orderBy: {
+          timestamp: 'desc',
+        },
+        skip: offset,
+        take: limit,
+      }),
+      this.prisma.notification.count(),
+    ]);
+
+    const pages = Math.ceil(total / limit);
+
+    return {
+      data: notifications,
+      total,
+      page,
+      pages,
+    };
   }
+
   async gatLogs(filter: {
     startDate?: Date;
     endDate?: Date;
