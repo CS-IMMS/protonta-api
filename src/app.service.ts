@@ -333,14 +333,14 @@ export class AppService implements OnModuleInit {
       );
       if (this.port.isOpen) {
         await new Promise<void>((resolve, reject) => {
-          this.port.write(commande + '\n', (err) => {
+          this.port.write(commanded + '\n', (err) => {
             if (err) {
               console.error('Error writing to serial port:', err.message);
               reject(err);
             } else {
               console.log(
                 'Data sent:',
-                commande,
+                commanded,
                 'at',
                 new Date().toISOString(),
               );
