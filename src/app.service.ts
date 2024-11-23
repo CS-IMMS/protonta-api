@@ -322,9 +322,11 @@ export class AppService implements OnModuleInit {
   }
   private async sendDataToProtenta(commande: string) {
     try {
+      const date = Math.floor(Date.now() / 1000);
+      const commanded = `128,${date.toString()}\n`;
       console.log(
         "Début d'envoi de la commande:",
-        commande,
+        commande + commanded,
         'à',
         new Date().toISOString(),
       );
