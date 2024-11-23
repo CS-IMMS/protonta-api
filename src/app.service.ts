@@ -356,8 +356,10 @@ export class AppService implements OnModuleInit {
     });
     const date = Math.floor(Date.now() / 1000);
     const commande = `128,${date}`;
-    if (commande) {
+    if (this.port.isOpen) {
       this.sendDataToProtenta(commande);
+    } else {
+      console.error("Le port série est fermé lors de l'initialisation");
     }
 
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
