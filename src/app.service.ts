@@ -368,8 +368,7 @@ export class AppService implements OnModuleInit {
           // this.socketGateway.notification(ProtentaStatusEnum.active);
           if (dataArray[0] === 'c') {
             dataParse = parseSensorDataCapteur(data.trim());
-          }
-          if (dataArray[0] === 'p') {
+          } else if (dataArray[0] === 'p') {
             dataParse = parseSensorDataMonitor(data.trim());
           }
           console.log('Parsed data:', dataParse);
