@@ -30,10 +30,7 @@ export class AppService implements OnModuleInit {
   async onModuleInit() {
     this.portPath = await this.findSerialPort();
     this.logger.info('portPath:::', this.portPath);
-    const date = Date.now();
-    const commande = `128,${date}`;
     if (this.portPath) {
-      this.sendDataToProtenta(commande);
       this.initializeSerialPort(this.portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
@@ -327,7 +324,6 @@ export class AppService implements OnModuleInit {
         'à',
         new Date().toISOString(),
       );
-
       if (this.port.isOpen) {
         await new Promise<void>((resolve, reject) => {
           this.port.write(commande + '\n', (err) => {
@@ -361,6 +357,9 @@ export class AppService implements OnModuleInit {
       path: portPath,
       baudRate: 115200,
     });
+    const date = Date.now();
+    const commande = `128,${date}`;
+    this.sendDataToProtenta(commande);
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     parser.on('data', async (data: any) => {
       try {
