@@ -30,8 +30,15 @@ export class AppService implements OnModuleInit {
   async onModuleInit() {
     this.portPath = await this.findSerialPort();
     this.logger.info('portPath:::', this.portPath);
+    const date = Math.floor(Date.now() / 1000);
+    const commande = `128,${date.toString()}\n`;
     if (this.portPath) {
       this.initializeSerialPort(this.portPath);
+      if (this.port) {
+        this.sendDataToProtenta(commande);
+      } else {
+        console.error("Le port série est fermé lors de l'initialisation");
+      }
     } else {
       console.error('Aucun port USB disponible trouvé.');
       this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
@@ -354,15 +361,6 @@ export class AppService implements OnModuleInit {
       path: portPath,
       baudRate: 115200,
     });
-    const date = Math.floor(Date.now() / 1000);
-    const commande = `128,${date.toString()}\n`;
-    console.log('this.port:::::', this.port);
-
-    if (this.port) {
-      this.sendDataToProtenta(commande);
-    } else {
-      console.error("Le port série est fermé lors de l'initialisation");
-    }
 
     const parser = this.port.pipe(new ReadlineParser({ delimiter: '\n' }));
     parser.on('data', async (data: any) => {
