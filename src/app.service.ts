@@ -355,7 +355,7 @@ export class AppService implements OnModuleInit {
       baudRate: 115200,
     });
     const date = Math.floor(Date.now() / 1000);
-    const commande = `128,${date.toString()}`;
+    const commande = `128,${date.toString()}\n`;
     console.log('this.port:::::', this.port);
 
     if (this.port) {
