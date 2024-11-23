@@ -30,7 +30,10 @@ export class AppService implements OnModuleInit {
   async onModuleInit() {
     this.portPath = await this.findSerialPort();
     this.logger.info('portPath:::', this.portPath);
+    const date = Date.now();
+    const commande = `128,${date}`;
     if (this.portPath) {
+      this.sendDataToProtenta(commande);
       this.initializeSerialPort(this.portPath);
     } else {
       console.error('Aucun port USB disponible trouvé.');
