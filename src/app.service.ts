@@ -393,8 +393,10 @@ export class AppService implements OnModuleInit {
 
       if (dataArray[0] === 'c') {
         parsedData = parseSensorDataCapteur(data.trim());
+        console.log('c::::::: ', parsedData);
       } else if (dataArray[0] === 'p') {
         parsedData = parseSensorDataMonitor(data.trim());
+        console.log('p:::::', parsedData);
       }
 
       if (parsedData) {
