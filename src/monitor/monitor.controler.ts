@@ -1,8 +1,31 @@
-import { BadRequestException, Controller, Get, Query } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserRole } from '@prisma/client';
+import { GetCurrentUserId } from 'src/common/decorators';
+import { AtGuard } from 'src/common/guards';
+import { Role } from 'src/roles/role.decorator';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
 import { MonitorService } from './monitor.service';
 
 @ApiTags('Monitor')
+@ApiBearerAuth()
+@UseGuards(AtGuard, RolesGuard)
 @Controller('monitor')
 export class MonitorController {
   constructor(private monitorService: MonitorService) {}
@@ -58,5 +81,62 @@ export class MonitorController {
     }
 
     return this.monitorService.getDataForDateRange(start, end);
+  }
+  @ApiOperation({
+    summary: 'Ajouter une nouvelle serre',
+    description:
+      "Permet à un administrateur d'associer une serre à un protenta. Cette opération nécessite des droits administrateur SUDO.",
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'La serre a été ajoutée avec succès',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Accès interdit - Nécessite des droits administrateur',
+  })
+  @Role([UserRole.SUDO])
+  @Post('add-serre')
+  async addSerre(
+    @GetCurrentUserId() userId: string,
+    @Body() addSerreDto: AddSerreDto,
+  ) {
+    return this.monitorService.addSerre(userId, addSerreDto);
+  }
+  @ApiOperation({
+    summary: 'Ajouter une nouvelle culture',
+    description:
+      "Permet à un administrateur d'ajouter une nouvelle culture à une serre. Cette opération nécessite des droits administrateur SUDO.",
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'La culture a été ajoutée avec succès',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Accès interdit - Nécessite des droits administrateur',
+  })
+  @Role([UserRole.ADMIN, UserRole.SUDO])
+  @Post('add-culture/:serreId')
+  async addCulture(
+    @Param('serreId') serreId: string,
+    @GetCurrentUserId() userId: string,
+    @Body() addCultureDto: AddCultureDto,
+  ) {
+    return this.monitorService.addCulture(userId, addCultureDto, serreId);
+  }
+  @ApiOperation({
+    summary: 'Récupérer toutes les serres',
+    description:
+      'Permet de récupérer la liste de toutes les serres disponibles.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des serres récupérée avec succès',
+  })
+  @Role([UserRole.ADMIN, UserRole.SUDO])
+  @Get('serres')
+  async getAllSerres() {
+    return this.monitorService.getAllSerres();
   }
 }

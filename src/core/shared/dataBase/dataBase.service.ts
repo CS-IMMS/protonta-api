@@ -6,14 +6,14 @@ export class DataBaseService {
   constructor(private readonly prisma: PrismaService) {}
 
   async deleteAllResource() {
-    const data = await this.prisma.sensorDatas
-      .deleteMany()
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((erro) => {
-        console.log(erro);
-      });
+    // const data = await this.prisma.sensorDatas
+    //   .deleteMany()
+    //   .then((data) => {
+    //     console.log(data);
+    //   })
+    //   .catch((erro) => {
+    //     console.log(erro);
+    //   });
   }
   async saveSensorData(data: ISensorDataPost) {
     return await this.prisma.sensorDatas

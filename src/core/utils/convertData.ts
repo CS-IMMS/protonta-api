@@ -8,6 +8,7 @@ const convertBufferData = (bufferData: any): string => {
   const asciiString = buffer.toString('ascii');
   return asciiString.trim();
 };
+//TODO: convert data to hour /3600/1000
 const parseData = (data: string) => {
   const date = new Date(new Date().getTime() + Number(data) * 1000);
   return date.toISOString();
