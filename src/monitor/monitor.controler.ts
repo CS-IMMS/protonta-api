@@ -5,27 +5,23 @@ import {
   Get,
   Param,
   Post,
-  Query,
-  UseGuards,
+  Query
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
-  ApiTags,
+  ApiTags
 } from '@nestjs/swagger';
 import { UserRole } from '@prisma/client';
 import { GetCurrentUserId } from 'src/common/decorators';
-import { AtGuard } from 'src/common/guards';
 import { Role } from 'src/roles/role.decorator';
-import { RolesGuard } from 'src/roles/roles.guard';
 import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
 import { MonitorService } from './monitor.service';
 
 @ApiTags('Monitor')
-@ApiBearerAuth()
-@UseGuards(AtGuard, RolesGuard)
+// @ApiBearerAuth()
+// @UseGuards(AtGuard, RolesGuard)
 @Controller('monitor')
 export class MonitorController {
   constructor(private monitorService: MonitorService) {}
@@ -95,7 +91,7 @@ export class MonitorController {
     status: 403,
     description: 'Accès interdit - Nécessite des droits administrateur',
   })
-  @Role([UserRole.SUDO])
+  // @Role([UserRole.SUDO])
   @Post('add-serre')
   async addSerre(
     @GetCurrentUserId() userId: string,
@@ -116,7 +112,7 @@ export class MonitorController {
     status: 403,
     description: 'Accès interdit - Nécessite des droits administrateur',
   })
-  @Role([UserRole.ADMIN, UserRole.SUDO])
+  // @Role([UserRole.ADMIN, UserRole.SUDO])
   @Post('add-culture/:serreId')
   async addCulture(
     @Param('serreId') serreId: string,
@@ -134,7 +130,7 @@ export class MonitorController {
     status: 200,
     description: 'Liste des serres récupérée avec succès',
   })
-  @Role([UserRole.ADMIN, UserRole.SUDO])
+  // @Role([UserRole.ADMIN, UserRole.SUDO])
   @Get('serres')
   async getAllSerres() {
     return this.monitorService.getAllSerres();
