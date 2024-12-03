@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { NotificationType } from '@prisma/client';
 import { PinoLogger } from 'nestjs-pino';
 import { ReadlineParser, SerialPort } from 'serialport';
@@ -396,7 +401,7 @@ export class AppService implements OnModuleInit {
     const dataArray = data.trim().split(',');
     try {
       let parsedData: any;
-
+      Logger.log('dataArray:::::', dataArray);
       if (dataArray[0] === protentaTest.capteur) {
         parsedData = parseSensorDataCapteur(data.trim());
         console.log('c::::::: ', parsedData);
