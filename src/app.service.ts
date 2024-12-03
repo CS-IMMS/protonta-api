@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { NotificationType } from '@prisma/client';
 import { PinoLogger } from 'nestjs-pino';
 import { ReadlineParser, SerialPort } from 'serialport';
+import { protentaTest } from './core/shared/capteurTest';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
   LogValueType,
@@ -396,10 +397,10 @@ export class AppService implements OnModuleInit {
     try {
       let parsedData: any;
 
-      if (dataArray[0] === 'c') {
+      if (dataArray[0] === protentaTest.capteur) {
         parsedData = parseSensorDataCapteur(data.trim());
         console.log('c::::::: ', parsedData);
-      } else if (dataArray[0] === 'p') {
+      } else if (dataArray[0] === protentaTest.protenta) {
         parsedData = parseSensorDataMonitor(data.trim());
         console.log('p:::::', parsedData);
       }
