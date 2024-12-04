@@ -10,7 +10,15 @@ import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
 @Injectable()
 export class MonitorService {
   constructor(private prisma: PrismaService) {}
-
+  async getLatestSensorData() {
+    const data = await this.prisma.sensorDatas.findMany({
+      orderBy: {
+        timestamp: 'desc',
+      },
+      take: 1,
+    });
+    return data[0];
+  }
   async getDataForPeriod(period: string) {
     if (period === 'minute') {
       return await this.getMinuteData();

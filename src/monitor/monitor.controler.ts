@@ -5,17 +5,10 @@ import {
   Get,
   Param,
   Post,
-  Query
+  Query,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags
-} from '@nestjs/swagger';
-import { UserRole } from '@prisma/client';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserId } from 'src/common/decorators';
-import { Role } from 'src/roles/role.decorator';
 import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
 import { MonitorService } from './monitor.service';
 
@@ -25,6 +18,19 @@ import { MonitorService } from './monitor.service';
 @Controller('monitor')
 export class MonitorController {
   constructor(private monitorService: MonitorService) {}
+  @ApiOperation({
+    summary: 'Récupère les dernières données des capteurs',
+    description:
+      'Ce end-point permet de récupérer les dernières données des capteurs.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Dernières données des capteurs récupérées avec succès',
+  })
+  @Get('latest-data')
+  async getLatestSensorData() {
+    return this.monitorService.getLatestSensorData();
+  }
   @ApiOperation({
     summary: 'Récupère les données agrégées pour une période donnée',
     description:
