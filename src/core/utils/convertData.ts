@@ -32,6 +32,8 @@ const parseSensorDataCapteur = (dataString: string) => {
     gyro_y: Number(dataArray[14]),
     gyro_z: Number(dataArray[15]),
     accuracy: Number(dataArray[16]),
+    gaz: Number(dataArray[17]),
+    co2: Number(dataArray[18]),
   };
 };
 const parseSensorDataMonitor = (dataString: string) => {

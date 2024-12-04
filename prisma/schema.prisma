@@ -125,6 +125,8 @@ model SensorDatas {
   gyro_y                Float?
   gyro_z                Float?
   accuracy              Int?
+  gaz                   Int?
+  co2                   Int?
   SeuilHumidity_min     Float?
   SeuilHumidity_max     Float?
   SeuilTemp_min         Float?
@@ -201,24 +203,26 @@ model SensorDatas {
 }
 
 model SensorDataForMinute {
-  id              String   @id @default(uuid())
-  timestamp       DateTime @default(now())
-  startTimestamp  DateTime // Start of the aggregation period
-  endTimestamp    DateTime // End of the aggregation period
+  id                   String   @id @default(uuid())
+  timestamp            DateTime @default(now())
+  startTimestamp       DateTime // Start of the aggregation period
+  endTimestamp         DateTime // End of the aggregation period
   // Average sensor readings
-  averageTemp     Float?
-  averageHumidity Float?
-  averagePressure Float?
-  averageLightA   Float?
-  averageSol      Float?
-  averageAccX     Float?
-  averageAccY     Float?
-  averageAccZ     Float?
-  averageIaq      Float?
-  averageGyroX    Float?
-  averageGyroY    Float?
-  averageGyroZ    Float?
-
+  averageTemp          Float?
+  averageHumidity      Float?
+  averagePressure      Float?
+  averageLightA        Float?
+  averageSol           Float?
+  averageAccX          Float?
+  averageAccY          Float?
+  averageAccZ          Float?
+  averageIaq           Float?
+  averageGyroX         Float?
+  averageGyroY         Float?
+  averageGyroZ         Float?
+  accuracy             Int?
+  gaz                  Int?
+  co2                  Int?
   // Thresholds
   lastSeuilHumidityMin Float?
   lastSeuilHumidityMax Float?
@@ -267,19 +271,21 @@ model SensorDataForHour {
   endTimestamp   DateTime // End of the aggregation period
 
   // Aggregated averages for hourly data
-  averageTemp     Float?
-  averageHumidity Float?
-  averagePressure Float?
-  averageLightA   Float?
-  averageSol      Float?
-  averageAccX     Float?
-  averageAccY     Float?
-  averageAccZ     Float?
-  averageIaq      Float?
-  averageGyroX    Float?
-  averageGyroY    Float?
-  averageGyroZ    Float?
-
+  averageTemp          Float?
+  averageHumidity      Float?
+  averagePressure      Float?
+  averageLightA        Float?
+  averageSol           Float?
+  averageAccX          Float?
+  averageAccY          Float?
+  averageAccZ          Float?
+  averageIaq           Float?
+  averageGyroX         Float?
+  averageGyroY         Float?
+  averageGyroZ         Float?
+  accuracy             Int?
+  gaz                  Int?
+  co2                  Int?
   // Last values for thresholds and mean fields
   lastSeuilHumidityMin Float?
   lastSeuilHumidityMax Float?
@@ -327,19 +333,21 @@ model SensorDataForDay {
   endTimestamp   DateTime // End of the aggregation period
 
   // Aggregated averages for hourly data
-  averageTemp     Float?
-  averageHumidity Float?
-  averagePressure Float?
-  averageLightA   Float?
-  averageSol      Float?
-  averageAccX     Float?
-  averageAccY     Float?
-  averageAccZ     Float?
-  averageIaq      Float?
-  averageGyroX    Float?
-  averageGyroY    Float?
-  averageGyroZ    Float?
-
+  averageTemp          Float?
+  averageHumidity      Float?
+  averagePressure      Float?
+  averageLightA        Float?
+  averageSol           Float?
+  averageAccX          Float?
+  averageAccY          Float?
+  averageAccZ          Float?
+  averageIaq           Float?
+  averageGyroX         Float?
+  averageGyroY         Float?
+  averageGyroZ         Float?
+  accuracy             Int?
+  gaz                  Int?
+  co2                  Int?
   // Last values for thresholds and mean fields
   lastSeuilHumidityMin Float?
   lastSeuilHumidityMax Float?
