@@ -11,6 +11,7 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserId } from 'src/common/decorators';
 import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
 import { MonitorService } from './monitor.service';
+import { MonitorType } from './interfaces/monitor.interface';
 
 @ApiTags('Monitor')
 // @ApiBearerAuth()
@@ -28,8 +29,8 @@ export class MonitorController {
     description: 'Dernières données des capteurs récupérées avec succès',
   })
   @Get('latest-data')
-  async getLatestSensorData() {
-    return this.monitorService.getLatestSensorData();
+  async getLatestSensorData(@Query('dataType') dataType: MonitorType) {
+    return this.monitorService.getLatestSensorData(dataType);
   }
   @ApiOperation({
     summary: 'Récupère les données agrégées pour une période donnée',

@@ -163,3 +163,4 @@ const dataRecive = {
   315: 'Désactiver manuelAuto S15',
   316: 'Désactiver manuelAuto S16',
 };
+export type MonitorType = 'monitor' | 'capteur';
