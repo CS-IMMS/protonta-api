@@ -11,11 +11,14 @@ import { MonitorType } from './interfaces/monitor.interface';
 @Injectable()
 export class MonitorService {
   constructor(private prisma: PrismaService) {}
-  async getLatestSensorData(dataType: MonitorType) {
+  async getLatestSensorData(dataType: MonitorType, capteurName?: string) {
     const data = await this.prisma.sensorDatas.findMany({
       where: {
         ...(dataType === 'capteur'
-          ? { localName: { not: null } }
+          ? {
+              localName: { not: null },
+              ...(capteurName && { localName: capteurName }),
+            }
           : {
               AND: [
                 { MeanTemp: { not: null } },
