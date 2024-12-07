@@ -12,30 +12,45 @@ import { MonitorType } from './interfaces/monitor.interface';
 export class MonitorService {
   constructor(private prisma: PrismaService) {}
   async getLatestSensorData(dataType: MonitorType, capteurName?: string) {
-    const data = await this.prisma.sensorDatas.findMany({
-      where: {
-        ...(dataType === 'capteur'
-          ? {
-              localName: { not: null },
-              ...(capteurName && { localName: capteurName }),
-            }
-          : {
-              AND: [
-                { MeanTemp: { not: null } },
-                { MeanHumidity: { not: null } },
-                { MeanLum: { not: null } },
-                { MeanPress: { not: null } },
-                { MeanCo2: { not: null } },
-                { S1: { not: null } },
-              ],
-            }),
-      },
-      orderBy: {
-        timestamp: 'desc',
-      },
-      take: 1,
-    });
-    return data[0];
+    let data: any;
+    if (capteurName) {
+      data = await this.prisma.sensorDatas.findFirst({
+        where: {
+          localName: {
+            equals: capteurName,
+          },
+        },
+        orderBy: {
+          timestamp: 'desc',
+        },
+        take: 1,
+      });
+
+      return data ?? null;
+    } else {
+      data = await this.prisma.sensorDatas.findMany({
+        where: {
+          ...(dataType === 'capteur'
+            ? { localName: { not: null } }
+            : {
+                AND: [
+                  { MeanTemp: { not: null } },
+                  { MeanHumidity: { not: null } },
+                  { MeanLum: { not: null } },
+                  { MeanPress: { not: null } },
+                  { MeanCo2: { not: null } },
+                  { S1: { not: null } },
+                ],
+              }),
+        },
+        orderBy: {
+          timestamp: 'desc',
+        },
+        take: 1,
+      });
+
+      return data[0];
+    }
   }
   async getDataForPeriod(period: string) {
     if (period === 'minute') {
