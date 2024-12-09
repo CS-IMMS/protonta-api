@@ -10,6 +10,7 @@ import { ReadlineParser, SerialPort } from 'serialport';
 import { protentaTest } from './core/shared/capteurTest';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
+  convertTimeToMilliseconds,
   LogValueType,
   parseSensorDataCapteur,
   parseSensorDataMonitor,
@@ -19,7 +20,6 @@ import { sensorCodes, sensorManualAutoCodes } from './dto/utils';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
 import { SocketGateway } from './socket/socket.service';
-
 @Injectable()
 export class AppService implements OnModuleInit {
   private port: SerialPort;
@@ -249,11 +249,9 @@ export class AppService implements OnModuleInit {
 
     const pollinationParams = [
       commande.PolStartTime
-        ? this.convertTimeToMilliseconds(commande.PolStartTime)
+        ? convertTimeToMilliseconds(commande.PolStartTime)
         : 0,
-      commande.PolEndTime
-        ? this.convertTimeToMilliseconds(commande.PolEndTime)
-        : 0,
+      commande.PolEndTime ? convertTimeToMilliseconds(commande.PolEndTime) : 0,
       commande.Periode ? commande.Periode * 60 * 1000 : 0,
       commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
@@ -445,16 +443,5 @@ export class AppService implements OnModuleInit {
   }
   checkInactivity() {
     this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
-  }
-  private convertTimeToMilliseconds(time: string | Date): number {
-    if (time instanceof Date) {
-      const hours = time.getHours();
-      const minutes = time.getMinutes();
-      return (hours * 3600 + minutes * 60) * 1000;
-    }
-
-    // Pour le format "HH:mm"
-    const [hours, minutes] = time.split(':').map(Number);
-    return (hours * 3600 + minutes * 60) * 1000;
   }
 }

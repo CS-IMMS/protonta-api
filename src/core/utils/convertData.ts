@@ -85,9 +85,9 @@ const parseSensorDataMonitor = (dataString: string) => {
     a8: Number(dataArray[40]),
     a9: Number(dataArray[41]),
     a10: Number(dataArray[42]),
-    pollinationStartTime: parseData(dataArray[43]),
-    pollinationEndTime: parseData(dataArray[44]),
-    PeriodePol: parseData(dataArray[45]),
+    pollinationStartTime: convertMillisecondsToHours(Number(dataArray[43])),
+    pollinationEndTime: convertMillisecondsToHours(Number(dataArray[44])),
+    PeriodePol: convertMillisecondsToHours(Number(dataArray[45])),
     ManuelAutoS1: Number(dataArray[46]),
     ManuelAutoS2: Number(dataArray[47]),
     ManuelAutoS3: Number(dataArray[48]),
@@ -106,6 +106,19 @@ const parseSensorDataMonitor = (dataString: string) => {
     ManuelAutoS16: Number(dataArray[61]),
     MonitorTime: String(dataArray[62]),
   };
+};
+const convertMillisecondsToHours = (milliseconds: number): number => {
+  return Math.floor(milliseconds / (3600 * 1000));
+};
+
+const convertTimeToMilliseconds = (time: string | Date): number => {
+  if (time instanceof Date) {
+    return time.getHours() * 3600 * 1000;
+  }
+
+  // Convertir directement l'heure en millisecondes
+  const hours = parseInt(time);
+  return hours * 3600 * 1000;
 };
 
 interface IMonitorData {
@@ -126,7 +139,9 @@ export {
   IMonitorData,
   LogValueType,
   convertBufferData,
+  convertMillisecondsToHours,
+  convertTimeToMilliseconds,
   parseSensorDataCapteur,
-  parseSensorDataMonitor
+  parseSensorDataMonitor,
 };
 
