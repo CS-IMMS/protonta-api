@@ -248,8 +248,12 @@ export class AppService implements OnModuleInit {
     }
 
     const pollinationParams = [
-      commande.PolStartTime ? new Date(commande.PolStartTime).getTime() : 0,
-      commande.PolEndTime ? new Date(commande.PolEndTime).getTime() : 0,
+      commande.PolStartTime
+        ? this.convertTimeToMilliseconds(commande.PolStartTime)
+        : 0,
+      commande.PolEndTime
+        ? this.convertTimeToMilliseconds(commande.PolEndTime)
+        : 0,
       commande.Periode ? commande.Periode * 60 * 1000 : 0,
       commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
@@ -441,5 +445,16 @@ export class AppService implements OnModuleInit {
   }
   checkInactivity() {
     this.socketGateway.notification(NotificationType.Moniteur, 'inactif');
+  }
+  private convertTimeToMilliseconds(time: string | Date): number {
+    if (time instanceof Date) {
+      const hours = time.getHours();
+      const minutes = time.getMinutes();
+      return (hours * 3600 + minutes * 60) * 1000;
+    }
+
+    // Pour le format "HH:mm"
+    const [hours, minutes] = time.split(':').map(Number);
+    return (hours * 3600 + minutes * 60) * 1000;
   }
 }
