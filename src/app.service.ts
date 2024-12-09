@@ -209,7 +209,7 @@ export class AppService implements OnModuleInit {
 
     // Traiter les états des capteurs S1 à S15
     Object.entries(sensorCodes).forEach(([key, codes]) => {
-      console.log(commande[key]);
+      // console.log(commande[key]);
 
       if (commande[key] !== undefined) {
         const action = commande[key].toLowerCase();
@@ -248,11 +248,9 @@ export class AppService implements OnModuleInit {
     }
 
     const pollinationParams = [
-      commande.PolStartTime
-        ? convertTimeToMilliseconds(commande.PolStartTime)
-        : 0,
-      commande.PolEndTime ? convertTimeToMilliseconds(commande.PolEndTime) : 0,
-      commande.Periode ? commande.Periode * 60 * 1000 : 0,
+      commande.PolStartTime ?? convertTimeToMilliseconds(commande.PolStartTime),
+      commande.PolEndTime ?? convertTimeToMilliseconds(commande.PolEndTime),
+      commande.Periode ?? commande.Periode * 60 * 1000,
       commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
       .filter((value) => value !== 0)

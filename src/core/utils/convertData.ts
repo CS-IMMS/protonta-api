@@ -111,8 +111,10 @@ const parseSensorDataMonitor = (dataString: string) => {
     MonitorTime: String(dataArray[62]),
   };
 };
-const convertMillisecondsToHours = (milliseconds: number): number => {
-  return Math.floor(milliseconds / (3600 * 1000));
+const convertMillisecondsToHours = (milliseconds: number): string => {
+  const totalHours = Math.floor(milliseconds / (3600 * 1000));
+  const hours12 = totalHours % 12 || 12;
+  return hours12.toString();
 };
 
 const convertTimeToMilliseconds = (time: string | Date): number => {
@@ -120,7 +122,6 @@ const convertTimeToMilliseconds = (time: string | Date): number => {
     return time.getHours() * 3600 * 1000;
   }
 
-  // Convertir directement l'heure en millisecondes
   const hours = parseInt(time);
   return hours * 3600 * 1000;
 };
