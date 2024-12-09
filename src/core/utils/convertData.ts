@@ -114,13 +114,14 @@ const parseSensorDataMonitor = (dataString: string) => {
 const convertMillisecondsToHours = (milliseconds: number): string => {
   const totalHours = Math.floor(milliseconds / (3600 * 1000));
   const hours12 = totalHours % 12 || 12;
-  return hours12.toString();
+  const hours = hours12 < 10 ? '0' + hours12 : hours12;
+  return hours.toString();
 };
 
-const convertTimeToMilliseconds = (time: string | Date): number => {
-  if (time instanceof Date) {
-    return time.getHours() * 3600 * 1000;
-  }
+const convertTimeToMilliseconds = (time: string): number => {
+  // if (time instanceof Date) {
+  //   return time.getHours() * 3600 * 1000;
+  // }
 
   const hours = parseInt(time);
   return hours * 3600 * 1000;
