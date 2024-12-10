@@ -41,8 +41,8 @@ export class SocketGateway
 
   sendSensorData(data: ISensorDataPost) {
     const timestamp = new Date();
-    this.sensorData = { ...data, timestamp };
-    this.server.emit('monitorDataOnLive', this.sensorData);
+    const sensorData = { ...data, timestamp };
+    this.server.emit('monitorDataOnLive', sensorData);
   }
   async notification(type: NotificationType, value: string) {
     const notificationData = { type, value: value };
