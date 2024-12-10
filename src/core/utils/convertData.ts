@@ -87,7 +87,7 @@ const parseSensorDataMonitor = (dataString: string) => {
     a10: Number(dataArray[42]),
     PolStartTime: String(convertMillisecondsToHours(Number(dataArray[43]))),
     PolEndTime: String(convertMillisecondsToHours(Number(dataArray[44]))),
-    Periode: String(Math.floor(Number(dataArray[45])) / (60 * 1000)),
+    Periode: String(Number(dataArray[45]) / (60 * 1000)),
     ManuelAutoS1: Number(dataArray[46]),
     ManuelAutoS2: Number(dataArray[47]),
     ManuelAutoS3: Number(dataArray[48]),
