@@ -46,6 +46,8 @@ export class SocketGateway
   }
   async notification(type: NotificationType, value: string) {
     const notificationData = { type, value: value };
+    console.log('notificationData::::', notificationData);
+
     this.server.emit('notifications', notificationData);
     await this.prisma.notification.create({
       data: {
