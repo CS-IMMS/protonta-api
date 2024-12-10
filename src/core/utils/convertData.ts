@@ -87,7 +87,7 @@ const parseSensorDataMonitor = (dataString: string) => {
     a10: Number(dataArray[42]),
     PolStartTime: String(convertMillisecondsToHours(Number(dataArray[43]))),
     PolEndTime: String(convertMillisecondsToHours(Number(dataArray[44]))),
-    Periode: String(Math.floor(Number(dataArray[45]) / (60 * 1000))),
+    Periode: convertMillisecondsToMinute(Number(dataArray[45])),
     ManuelAutoS1: Number(dataArray[46]),
     ManuelAutoS2: Number(dataArray[47]),
     ManuelAutoS3: Number(dataArray[48]),
@@ -109,6 +109,12 @@ const parseSensorDataMonitor = (dataString: string) => {
 };
 const convertMillisecondsToHours = (milliseconds: number): string => {
   const totalHours = Math.floor(milliseconds / (3600 * 1000));
+  // const hours12 = totalHours % 12 || 12;
+  // const hours = totalHours < 10 ? '0' + totalHours : totalHours;
+  return totalHours.toString();
+};
+const convertMillisecondsToMinute = (milliseconds: number): string => {
+  const totalHours = Math.floor(milliseconds / (60 * 1000));
   // const hours12 = totalHours % 12 || 12;
   // const hours = totalHours < 10 ? '0' + totalHours : totalHours;
   return totalHours.toString();
