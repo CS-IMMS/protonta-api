@@ -85,13 +85,9 @@ const parseSensorDataMonitor = (dataString: string) => {
     a8: Number(dataArray[40]),
     a9: Number(dataArray[41]),
     a10: Number(dataArray[42]),
-    pollinationStartTime: String(
-      convertMillisecondsToHours(Number(dataArray[43])),
-    ),
-    pollinationEndTime: String(
-      convertMillisecondsToHours(Number(dataArray[44])),
-    ),
-    PeriodePol: String(Math.floor(Number(dataArray[45])) / (60 * 1000)),
+    PolStartTime: String(convertMillisecondsToHours(Number(dataArray[43]))),
+    PolEndTime: String(convertMillisecondsToHours(Number(dataArray[44]))),
+    Periode: String(Math.floor(Number(dataArray[45])) / (60 * 1000)),
     ManuelAutoS1: Number(dataArray[46]),
     ManuelAutoS2: Number(dataArray[47]),
     ManuelAutoS3: Number(dataArray[48]),

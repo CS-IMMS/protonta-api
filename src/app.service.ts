@@ -250,7 +250,7 @@ export class AppService implements OnModuleInit {
     const pollinationParams = [
       commande.PolStartTime && convertTimeToMilliseconds(commande.PolStartTime),
       commande.PolEndTime && convertTimeToMilliseconds(commande.PolEndTime),
-      commande.Periode && commande.Periode * 60 * 1000,
+      commande.Periode && parseInt(commande.Periode) * 60 * 1000,
       commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
       .filter((value) => value !== 0)

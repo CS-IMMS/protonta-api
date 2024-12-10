@@ -101,7 +101,7 @@ model inititalConfig {
   Co2Max          Int?
   PolStartTime    String?
   PolEndTime      String?
-  Periode         Int?
+  Periode         String?
   MomentFloraison Boolean?
   CultureInfos    CultureInfos?
 }
@@ -172,9 +172,6 @@ model SensorDatas {
   a8                    Int                  @default(0)
   a9                    Int                  @default(0)
   a10                   Int                  @default(0)
-  pollinationStartTime  String?
-  pollinationEndTime    String?
-  PeriodePol            String?
   ManuelAutoS1          Int                  @default(0)
   ManuelAutoS2          Int                  @default(0)
   ManuelAutoS3          Int                  @default(0)
@@ -436,7 +433,7 @@ model ComamandeToMonitor {
   param316        Boolean?
   PolStartTime    String?
   PolEndTime      String?
-  Periode         Int?
+  Periode         String?
   MomentFloraison Boolean?
 }
 

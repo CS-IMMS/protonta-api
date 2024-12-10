@@ -130,6 +130,9 @@ export class HourlyAggregationService {
         S15: lastEntry.S15,
         S16: lastEntry.S16,
         MomentFloraison: lastEntry.MomentFloraison,
+        Periode: lastEntry.Periode,
+        PolEndTime: lastEntry.PolEndTime,
+        PolStartTime: lastEntry.PolStartTime,
       },
     });
   }

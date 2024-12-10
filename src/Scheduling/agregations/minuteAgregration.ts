@@ -107,6 +107,9 @@ export class MinuteAggregationService {
       accuracy: accuracy,
       gaz: gaz,
       co2: co2,
+      PolEndTime: PolEndTime,
+      PolStartTime: PolStartTime,
+      Periode: Periode,
     } = lastDataEntry || data[0];
     // Enregistrer les données agrégées dans `SensorDataForMinute`
     await this.prisma.sensorDataForMinute.create({
@@ -161,6 +164,9 @@ export class MinuteAggregationService {
         S15,
         S16,
         MomentFloraison: momentFloraison,
+        Periode,
+        PolEndTime,
+        PolStartTime,
       },
     });
   }
