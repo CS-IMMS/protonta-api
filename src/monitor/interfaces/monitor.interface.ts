@@ -1,4 +1,5 @@
 export interface ISensorDataPost {
+  timestamp?: Date;
   latest?: string; // Latest sensor reading timestamp or identifier
   elapsed?: string; // Elapsed time since the last reading
   localName?: string; // Local name of the sensor/device
