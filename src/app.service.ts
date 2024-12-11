@@ -268,9 +268,17 @@ export class AppService implements OnModuleInit {
     ]
       .filter((value) => value !== 0)
       .join(',');
+    console.log('commande.PolStartTime', response);
 
-    if (pollinationParams) {
-      response += `127,${pollinationParams}\n`;
+    if (
+      commande.PolStartTime ||
+      commande.PolEndTime ||
+      commande.Periode ||
+      commande.MomentFloraison
+    ) {
+      if (pollinationParams) {
+        response += `127,${pollinationParams}\n`;
+      }
     }
 
     // Traiter les codes manuelAuto
