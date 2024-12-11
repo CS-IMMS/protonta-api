@@ -1,4 +1,5 @@
 export interface ISensorDataPost {
+  timestamp?: Date;
   latest?: string; // Latest sensor reading timestamp or identifier
   elapsed?: string; // Elapsed time since the last reading
   localName?: string; // Local name of the sensor/device
@@ -63,9 +64,9 @@ export interface ISensorDataPost {
   a8?: number;
   a9?: number;
   a10?: number;
-  pollinationStartTime?: string;
-  pollinationEndTime?: string;
-  PeriodePol?: string;
+  PolStartTime?: string;
+  PolEndTime?: string;
+  Periode?: string;
   ManuelAutoS1?: number;
   ManuelAutoS2?: number;
   ManuelAutoS3?: number;
@@ -116,8 +117,8 @@ export interface SensorDataGet {
   SeuilCo2_max: number; // Maximum CO2 threshold
 
   MomentFloraison: boolean; // Control flowering event
-  pollinationStartTime: number; // Start time for pollination in hours (24-hour format)
-  pollinationEndTime: number; // End time for pollination in hours (24-hour format)
+  PolStartTime: number; // Start time for pollination in hours (24-hour format)
+  PolEndTime: number; // End time for pollination in hours (24-hour format)
 
   // Time synchronization
   year: number; // Year for time synchronization
@@ -163,3 +164,4 @@ const dataRecive = {
   315: 'Désactiver manuelAuto S15',
   316: 'Désactiver manuelAuto S16',
 };
+export type MonitorType = 'monitor' | 'capteur';

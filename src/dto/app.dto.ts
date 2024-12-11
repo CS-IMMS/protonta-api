@@ -324,8 +324,8 @@ export class MonitorCommandeDto {
 
   @ApiPropertyOptional({ description: 'Période de floraison (format string)' })
   @IsOptional()
-  @IsNumber()
-  Periode?: number;
+  @IsString()
+  Periode?: string;
 
   @ApiPropertyOptional({
     description: 'Moment de la floraison, doit être 0 ou 1',

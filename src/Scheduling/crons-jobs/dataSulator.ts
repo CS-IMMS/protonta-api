@@ -41,6 +41,8 @@
 //       gyro_y: faker.number.int({ min: 0, max: 50 }),
 //       gyro_z: faker.number.int({ min: 0, max: 50 }),
 //       accuracy: faker.number.int({ min: 0, max: 1 }),
+//       gaz: faker.number.int({ min: 0, max: 1 }),
+//       co2: faker.number.int({ min: 0, max: 1 }),
 //       SeuilHumidity_min: faker.number.int({ min: 0, max: 50 }),
 //       SeuilHumidity_max: faker.number.int({ min: 0, max: 50 }),
 //       SeuilTemp_min: faker.number.int({ min: 0, max: 50 }),

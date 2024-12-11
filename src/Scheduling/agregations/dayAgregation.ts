@@ -110,6 +110,9 @@ export class DailyAggregationService {
         lastMeanLum: lastEntry.lastMeanLum,
         lastMeanPress: lastEntry.lastMeanPress,
         lastMeanCo2: lastEntry.lastMeanCo2,
+        accuracy: lastEntry.accuracy,
+        gaz: lastEntry.gaz,
+        co2: lastEntry.co2,
         S1: lastEntry.S1,
         S2: lastEntry.S2,
         S3: lastEntry.S3,
@@ -127,6 +130,9 @@ export class DailyAggregationService {
         S15: lastEntry.S15,
         S16: lastEntry.S16,
         MomentFloraison: lastEntry.MomentFloraison,
+        Periode: lastEntry.Periode,
+        PolEndTime: lastEntry.PolEndTime,
+        PolStartTime: lastEntry.PolStartTime,
       },
     });
   }

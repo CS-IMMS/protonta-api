@@ -40,11 +40,14 @@ export class SocketGateway
   }
 
   sendSensorData(data: ISensorDataPost) {
-    this.sensorData = data;
-    this.server.emit('monitorDataOnLive', this.sensorData);
+    const timestamp = new Date();
+    const sensorData = { ...data, timestamp };
+    this.server.emit('monitorDataOnLive', sensorData);
   }
   async notification(type: NotificationType, value: string) {
     const notificationData = { type, value: value };
+    console.log('notificationData::::', notificationData);
+
     this.server.emit('notifications', notificationData);
     await this.prisma.notification.create({
       data: {

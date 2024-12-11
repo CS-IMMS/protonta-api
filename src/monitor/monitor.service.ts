@@ -6,11 +6,52 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prismaModule/prisma-service';
 import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
+import { MonitorType } from './interfaces/monitor.interface';
 
 @Injectable()
 export class MonitorService {
   constructor(private prisma: PrismaService) {}
+  async getLatestSensorData(dataType: MonitorType, capteurName?: string) {
+    let data: any;
+    if (capteurName) {
+      data = await this.prisma.sensorDatas.findFirst({
+        where: {
+          localName: {
+            equals: capteurName,
+          },
+        },
+        orderBy: {
+          timestamp: 'desc',
+        },
+        take: 1,
+      });
 
+      return data ?? null;
+    } else {
+      data = await this.prisma.sensorDatas.findMany({
+        where: {
+          ...(dataType === 'capteur'
+            ? { localName: { not: null } }
+            : {
+                AND: [
+                  { MeanTemp: { not: null } },
+                  { MeanHumidity: { not: null } },
+                  { MeanLum: { not: null } },
+                  { MeanPress: { not: null } },
+                  { MeanCo2: { not: null } },
+                  { S1: { not: null } },
+                ],
+              }),
+        },
+        orderBy: {
+          timestamp: 'desc',
+        },
+        take: 1,
+      });
+
+      return data[0];
+    }
+  }
   async getDataForPeriod(period: string) {
     if (period === 'minute') {
       return await this.getMinuteData();

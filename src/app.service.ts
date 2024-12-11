@@ -10,6 +10,7 @@ import { ReadlineParser, SerialPort } from 'serialport';
 import { protentaTest } from './core/shared/capteurTest';
 import { DataBaseService } from './core/shared/dataBase/dataBase.service';
 import {
+  convertTimeToMilliseconds,
   LogValueType,
   parseSensorDataCapteur,
   parseSensorDataMonitor,
@@ -19,7 +20,6 @@ import { sensorCodes, sensorManualAutoCodes } from './dto/utils';
 import { ISensorDataPost } from './monitor/interfaces/monitor.interface';
 import { PrismaService } from './prismaModule/prisma-service';
 import { SocketGateway } from './socket/socket.service';
-
 @Injectable()
 export class AppService implements OnModuleInit {
   private port: SerialPort;
@@ -209,7 +209,7 @@ export class AppService implements OnModuleInit {
 
     // Traiter les états des capteurs S1 à S15
     Object.entries(sensorCodes).forEach(([key, codes]) => {
-      console.log(commande[key]);
+      // console.log(commande[key]);
 
       if (commande[key] !== undefined) {
         const action = commande[key].toLowerCase();
@@ -248,9 +248,9 @@ export class AppService implements OnModuleInit {
     }
 
     const pollinationParams = [
-      commande.PolStartTime ? new Date(commande.PolStartTime).getTime() : 0,
-      commande.PolEndTime ? new Date(commande.PolEndTime).getTime() : 0,
-      commande.Periode ? commande.Periode * 60 * 1000 : 0,
+      commande.PolStartTime && convertTimeToMilliseconds(commande.PolStartTime),
+      commande.PolEndTime && convertTimeToMilliseconds(commande.PolEndTime),
+      commande.Periode && Number(commande.Periode) * 60 * 1000,
       commande.MomentFloraison ? commande.MomentFloraison : 0,
     ]
       .filter((value) => value !== 0)

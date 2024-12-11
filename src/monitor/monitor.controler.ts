@@ -6,29 +6,35 @@ import {
   Param,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { UserRole } from '@prisma/client';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetCurrentUserId } from 'src/common/decorators';
-import { AtGuard } from 'src/common/guards';
-import { Role } from 'src/roles/role.decorator';
-import { RolesGuard } from 'src/roles/roles.guard';
 import { AddCultureDto, AddSerreDto } from './dto/monitor.dto';
+import { MonitorType } from './interfaces/monitor.interface';
 import { MonitorService } from './monitor.service';
 
 @ApiTags('Monitor')
-@ApiBearerAuth()
-@UseGuards(AtGuard, RolesGuard)
+// @ApiBearerAuth()
+// @UseGuards(AtGuard, RolesGuard)
 @Controller('monitor')
 export class MonitorController {
   constructor(private monitorService: MonitorService) {}
+  @ApiOperation({
+    summary: 'Récupère les dernières données des capteurs',
+    description:
+      'Ce end-point permet de récupérer les dernières données des capteurs.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Dernières données des capteurs récupérées avec succès',
+  })
+  @Get('latest-data')
+  async getLatestSensorData(
+    @Query('dataType') dataType: MonitorType,
+    @Query('capteurName') capteurName?: string,
+  ) {
+    return this.monitorService.getLatestSensorData(dataType, capteurName);
+  }
   @ApiOperation({
     summary: 'Récupère les données agrégées pour une période donnée',
     description:
@@ -95,7 +101,7 @@ export class MonitorController {
     status: 403,
     description: 'Accès interdit - Nécessite des droits administrateur',
   })
-  @Role([UserRole.SUDO])
+  // @Role([UserRole.SUDO])
   @Post('add-serre')
   async addSerre(
     @GetCurrentUserId() userId: string,
@@ -116,7 +122,7 @@ export class MonitorController {
     status: 403,
     description: 'Accès interdit - Nécessite des droits administrateur',
   })
-  @Role([UserRole.ADMIN, UserRole.SUDO])
+  // @Role([UserRole.ADMIN, UserRole.SUDO])
   @Post('add-culture/:serreId')
   async addCulture(
     @Param('serreId') serreId: string,
@@ -134,7 +140,7 @@ export class MonitorController {
     status: 200,
     description: 'Liste des serres récupérée avec succès',
   })
-  @Role([UserRole.ADMIN, UserRole.SUDO])
+  // @Role([UserRole.ADMIN, UserRole.SUDO])
   @Get('serres')
   async getAllSerres() {
     return this.monitorService.getAllSerres();

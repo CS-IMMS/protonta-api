@@ -32,6 +32,8 @@ const parseSensorDataCapteur = (dataString: string) => {
     gyro_y: Number(dataArray[14]),
     gyro_z: Number(dataArray[15]),
     accuracy: Number(dataArray[16]),
+    gaz: Number(dataArray[17]),
+    co2: Number(dataArray[18]),
   };
 };
 const parseSensorDataMonitor = (dataString: string) => {
@@ -83,9 +85,9 @@ const parseSensorDataMonitor = (dataString: string) => {
     a8: Number(dataArray[40]),
     a9: Number(dataArray[41]),
     a10: Number(dataArray[42]),
-    pollinationStartTime: parseData(dataArray[43]),
-    pollinationEndTime: parseData(dataArray[44]),
-    PeriodePol: parseData(dataArray[45]),
+    PolStartTime: String(convertMillisecondsToHours(Number(dataArray[43]))),
+    PolEndTime: String(convertMillisecondsToHours(Number(dataArray[44]))),
+    Periode: convertMillisecondsToMinute(Number(dataArray[45])),
     ManuelAutoS1: Number(dataArray[46]),
     ManuelAutoS2: Number(dataArray[47]),
     ManuelAutoS3: Number(dataArray[48]),
@@ -104,6 +106,27 @@ const parseSensorDataMonitor = (dataString: string) => {
     ManuelAutoS16: Number(dataArray[61]),
     MonitorTime: String(dataArray[62]),
   };
+};
+const convertMillisecondsToHours = (milliseconds: number): string => {
+  const totalHours = Math.floor(milliseconds / (3600 * 1000));
+  // const hours12 = totalHours % 12 || 12;
+  // const hours = totalHours < 10 ? '0' + totalHours : totalHours;
+  return totalHours.toString();
+};
+const convertMillisecondsToMinute = (milliseconds: number): string => {
+  const totalHours = Math.floor(milliseconds / (60 * 1000));
+  // const hours12 = totalHours % 12 || 12;
+  // const hours = totalHours < 10 ? '0' + totalHours : totalHours;
+  return totalHours.toString();
+};
+
+const convertTimeToMilliseconds = (time: string): number => {
+  // if (time instanceof Date) {
+  //   return time.getHours() * 3600 * 1000;
+  // }
+
+  const hours = parseInt(time);
+  return hours * 3600 * 1000;
 };
 
 interface IMonitorData {
@@ -124,6 +147,8 @@ export {
   IMonitorData,
   LogValueType,
   convertBufferData,
+  convertMillisecondsToHours,
+  convertTimeToMilliseconds,
   parseSensorDataCapteur,
   parseSensorDataMonitor
 };
