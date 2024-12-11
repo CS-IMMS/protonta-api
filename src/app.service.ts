@@ -169,6 +169,8 @@ export class AppService implements OnModuleInit {
   public async sendCommande(commande: MonitorCommandeDto) {
     try {
       const newCommande = await this.processToTransformData(commande);
+      console.log('newCommande@@@', newCommande);
+
       await this.sendDataToProtenta(newCommande)
         .then(async () => {
           await this.saveCommande(commande);
