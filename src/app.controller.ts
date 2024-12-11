@@ -5,18 +5,24 @@ import {
   Get,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiOperation,
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { ComamandeToMonitor } from '@prisma/client';
 import { AppService } from './app.service';
+import { GetCurrentUserId } from './common/decorators';
+import { AtGuard } from './common/guards';
 import { LogValueType } from './core/utils/convertData';
 import { MonitorCommandeDto, NotificationDto, RestartDto } from './dto/app.dto';
-
+import { RolesGuard } from './roles/roles.guard';
+@ApiBearerAuth()
+@UseGuards(AtGuard, RolesGuard)
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -175,11 +181,17 @@ export class AppController {
     return validFields.includes(field);
   }
   @Post('monitor-restart')
-  protendataRestart(@Body() restartDto: RestartDto) {
+  protendataRestart(
+    @Body() restartDto: RestartDto,
+    @GetCurrentUserId() userId: string,
+  ) {
     return this.appService.resatartService(restartDto);
   }
   @Post('send-commande')
-  async updateCommade(@Body() commande: MonitorCommandeDto) {
+  async updateCommade(
+    @Body() commande: MonitorCommandeDto,
+    @GetCurrentUserId() userId: string,
+  ) {
     try {
       console.log(
         'Nombre de clés dans la commande:',
@@ -189,7 +201,7 @@ export class AppController {
       if (Object.keys(commande).length === 0) {
         throw new BadRequestException('Aucune commande passée.');
       }
-      return await this.appService.sendCommande(commande);
+      return await this.appService.sendCommande(commande, userId);
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;

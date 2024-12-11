@@ -166,12 +166,23 @@ export class AppService implements OnModuleInit {
       },
     });
   }
-  public async sendCommande(commande: MonitorCommandeDto) {
+  public async sendCommande(commande: MonitorCommandeDto, userId: string) {
     try {
+      console.log(userId);
       const newCommande = await this.processToTransformData(commande);
       await this.sendDataToProtenta(newCommande)
         .then(async () => {
-          await this.saveCommande(commande);
+          const commandeSave = await this.saveCommande(commande);
+          await this.prisma.usersLogs.create({
+            data: {
+              user: {
+                connect: { id: userId },
+              },
+              commandePasse: {
+                connect: { id: commandeSave.id },
+              },
+            },
+          });
           return { message: 'Commande envoyée', commande: newCommande };
         })
         .catch((e) => {

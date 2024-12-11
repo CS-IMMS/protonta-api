@@ -10,14 +10,23 @@ datasource db {
 }
 
 model Users {
-  id          String   @id @default(uuid())
+  id          String      @id @default(uuid())
   firstName   String?
   lastName    String?
-  userName    String   @unique
+  userName    String      @unique
   password    String
   phoneNumber String?
-  role        UserRole @default(USER)
+  role        UserRole    @default(USER)
   allSerre    Serre[]
+  UsersLogs   UsersLogs[]
+}
+
+model UsersLogs {
+  id            String               @id @default(uuid())
+  createdAt         DateTime        @default(now())
+  user          Users                @relation(fields: [usersId], references: [id])
+  usersId       String
+  commandePasse ComamandeToMonitor[]
 }
 
 model Serre {
@@ -386,8 +395,8 @@ model SensorDataForDay {
 }
 
 model ComamandeToMonitor {
-  id              String   @id @default(uuid())
-  timestamp       DateTime @default(now())
+  id              String     @id @default(uuid())
+  timestamp       DateTime   @default(now())
   S1              String?
   S2              String?
   S3              String?
@@ -435,6 +444,8 @@ model ComamandeToMonitor {
   PolEndTime      String?
   Periode         String?
   MomentFloraison Boolean?
+  UsersLogs       UsersLogs? @relation(fields: [usersLogsId], references: [id])
+  usersLogsId     String?
 }
 
 model Notification {
