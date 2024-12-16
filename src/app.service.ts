@@ -77,36 +77,144 @@ export class AppService implements OnModuleInit {
       pages,
     };
   }
-
   public async gatLogs(filter: {
-    startDate?: Date;
-    endDate?: Date;
+    pageNumber: number;
+    limitNumber: number;
+    startDate?: string;
+    endDate?: string;
     field?: string;
     value?: LogValueType;
+    user?: string;
   }) {
-    const { startDate, endDate, field, value } = filter;
-    const conditions: any = {};
-
+    const { startDate, endDate, field, value, user, pageNumber, limitNumber } =
+      filter;
+    const offset = (pageNumber - 1) * limitNumber;
+    // Construction des conditions
+    const conditions: Record<string, any> = {};
+    // console.log(startDate);
+    if (user) {
+      conditions.UsersLogs = {
+        user: {
+          id: user,
+        },
+      };
+    }
     if (startDate || endDate) {
-      conditions.timestamp = {};
-      if (startDate) conditions.timestamp.gte = startDate;
-      if (endDate) conditions.timestamp.lte = endDate;
+      conditions.timestamp = {
+        ...(startDate
+          ? { gte: this.validateAndParseDate(startDate, 'startDate') }
+          : {}),
+        ...(endDate
+          ? { lte: this.validateAndParseDate(endDate, 'endDate') }
+          : {}),
+      };
     }
 
-    if (field && value) {
+    if (field && value === undefined) {
+      conditions[field] = { not: null };
+    } else if (field && value !== undefined) {
       conditions[field] = value;
     }
 
-    if (Object.keys(conditions).length === 0) {
-      return this.prisma.comamandeToMonitor.findMany();
-    }
+    const selectableFields = [
+      'S1',
+      'S2',
+      'S3',
+      'S4',
+      'S5',
+      'S6',
+      'S7',
+      'S8',
+      'S9',
+      'S10',
+      'S11',
+      'S12',
+      'S13',
+      'S14',
+      'S15',
+      'S16',
+      'HumMin',
+      'HumMax',
+      'TemMin',
+      'TemMax',
+      'LumMin',
+      'LumMax',
+      'PressMin',
+      'PressMax',
+      'Co2Min',
+      'Co2Max',
+      'param300',
+      'param301',
+      'param302',
+      'param303',
+      'param304',
+      'param305',
+      'param306',
+      'param307',
+      'param308',
+      'param309',
+      'param310',
+      'param311',
+      'param312',
+      'param313',
+      'param314',
+      'param315',
+      'param316',
+      'PolStartTime',
+      'PolEndTime',
+      'Periode',
+      'MomentFloraison',
+    ];
 
-    return this.prisma.comamandeToMonitor.findMany({
-      // where: conditions,
-      orderBy: {
-        timestamp: 'desc',
+    const selectFields: Record<string, boolean> = field
+      ? { [field]: true }
+      : Object.fromEntries(selectableFields.map((f) => [f, true]));
+
+    const results = await this.prisma.comamandeToMonitor.findMany({
+      where: conditions,
+      // where: {
+      //   UsersLogs: {
+      //     user: {
+      //       id: user,
+      //     },
+      //   },
+      // },
+      skip: offset,
+      take: limitNumber,
+      orderBy: { timestamp: 'desc' },
+      select: {
+        id: true,
+        timestamp: true,
+        ...selectFields,
+        UsersLogs: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    // Suppression des champs avec des valeurs null
+    return results.map((result) =>
+      Object.fromEntries(
+        Object.entries(result).filter(([, value]) => value !== null),
+      ),
+    );
+  }
+  private validateAndParseDate(dateStr: string, fieldName: string): Date {
+    const parsedDate = new Date(dateStr);
+    if (isNaN(parsedDate.getTime())) {
+      throw new BadRequestException(`Invalid ${fieldName}: ${dateStr}`);
+    }
+    return parsedDate;
   }
   async saveCommande(commande: MonitorCommandeDto) {
     return await this.prisma.comamandeToMonitor.create({
@@ -139,21 +247,21 @@ export class AppService implements OnModuleInit {
         Co2Max: commande.Co2Max ?? null,
         param300: commande.param300 ?? null,
         param301: commande.param301 ?? null,
-        param302: commande.param300 ?? null,
-        param303: commande.param300 ?? null,
-        param304: commande.param300 ?? null,
-        param305: commande.param300 ?? null,
-        param306: commande.param300 ?? null,
-        param307: commande.param300 ?? null,
-        param308: commande.param300 ?? null,
-        param309: commande.param300 ?? null,
-        param310: commande.param300 ?? null,
-        param311: commande.param300 ?? null,
-        param312: commande.param300 ?? null,
-        param313: commande.param300 ?? null,
-        param314: commande.param300 ?? null,
-        param315: commande.param300 ?? null,
-        param316: commande.param300 ?? null,
+        param302: commande.param302 ?? null,
+        param303: commande.param303 ?? null,
+        param304: commande.param304 ?? null,
+        param305: commande.param305 ?? null,
+        param306: commande.param306 ?? null,
+        param307: commande.param307 ?? null,
+        param308: commande.param308 ?? null,
+        param309: commande.param309 ?? null,
+        param310: commande.param310 ?? null,
+        param311: commande.param311 ?? null,
+        param312: commande.param312 ?? null,
+        param313: commande.param313 ?? null,
+        param314: commande.param314 ?? null,
+        param315: commande.param315 ?? null,
+        param316: commande.param316 ?? null,
         PolStartTime: commande.PolStartTime ?? null,
         PolEndTime: commande.PolEndTime ?? null,
         Periode: commande.Periode ?? null,
@@ -168,10 +276,24 @@ export class AppService implements OnModuleInit {
   }
   public async sendCommande(commande: MonitorCommandeDto, userId: string) {
     try {
-      console.log(userId);
       const newCommande = await this.processToTransformData(commande);
-      console.log('newCommande@@@', newCommande);
+      // console.log('newCommande@@@', newCommande);
+      // const commandeSave = await this.saveCommande(commande);
+      // console.log('commandeSave', commandeSave);
 
+      // const saveC = await this.prisma.usersLogs.create({
+      //   data: {
+      //     user: {
+      //       connect: { id: userId },
+      //     },
+      //     commandePasse: {
+      //       connect: { id: commandeSave.id },
+      //     },
+      //   },
+      // });
+      // console.log(saveC);
+
+      // return { message: 'Commande envoyée', commande: newCommande };
       await this.sendDataToProtenta(newCommande)
         .then(async () => {
           const commandeSave = await this.saveCommande(commande);

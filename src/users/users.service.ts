@@ -22,8 +22,7 @@ export class UsersService {
         allSerre: {
           select: {
             id: true,
-            serreId: true,
-            sensorDatasId: true,
+            name: true,
             allCulture: {
               select: {
                 id: true,
@@ -138,7 +137,7 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     // Vérifier si l'utilisateur existe
-    await this.getIfUserExist(id);
+    const userData = await this.getIfUserExist(id);
 
     const { firstName, lastName, passWord, role, userName, phoneNumber } =
       updateUserDto;
@@ -146,11 +145,11 @@ export class UsersService {
 
     // Préparer les données de mise à jour
     const updateData: any = {
-      firstName: firstName ?? undefined,
-      lastName: lastName ?? undefined,
-      phoneNumber: phoneNumber ?? undefined,
-      role: role ?? undefined,
-      userName: userName ?? undefined,
+      firstName: firstName ?? userData.firstName,
+      lastName: lastName ?? userData.lastName,
+      phoneNumber: phoneNumber ?? userData.phoneNumber,
+      role: role ?? userData.role,
+      userName: userName ?? userData.userName,
     };
 
     if (passWord) {

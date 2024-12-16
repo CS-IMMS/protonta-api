@@ -14,7 +14,6 @@ import {
   ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
-import { ComamandeToMonitor } from '@prisma/client';
 import { AppService } from './app.service';
 import { GetCurrentUserId } from './common/decorators';
 import { AtGuard } from './common/guards';
@@ -110,23 +109,40 @@ export class AppController {
     enum: ['active', 'inactive', 'true', 'false', 'reactor', 0, 1],
     description: 'The value to filter the specified field by',
   })
+  @ApiQuery({
+    name: 'user',
+    required: false,
+    type: String,
+    description: 'The user is a userId',
+  })
   @ApiBadRequestResponse({
     description: 'Invalid field provided',
   })
   gatLogs(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('field') field?: string,
     @Query('value') value?: LogValueType,
-  ): Promise<ComamandeToMonitor[]> {
+    @Query('user') user?: string,
+  ): Promise<any[]> {
     if (field && !this.isValidField(field)) {
       throw new BadRequestException(`Invalid field: ${field}`);
     }
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+    // if (field && !value) {
+    //   value = ''
+    // }
     return this.appService.gatLogs({
-      startDate: startDate ? new Date(startDate) : undefined,
-      endDate: endDate ? new Date(endDate) : undefined,
+      pageNumber,
+      limitNumber,
+      startDate: startDate,
+      endDate: endDate,
       field,
       value,
+      user,
     });
   }
   private isValidField(field: string): boolean {

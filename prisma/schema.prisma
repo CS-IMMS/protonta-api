@@ -17,25 +17,25 @@ model Users {
   password    String
   phoneNumber String?
   role        UserRole    @default(USER)
-  allSerre    Serre[]
+  allSerre    Serre[]     @relation("UserSerre")
   UsersLogs   UsersLogs[]
 }
 
 model UsersLogs {
   id            String               @id @default(uuid())
-  createdAt         DateTime        @default(now())
+  createdAt     DateTime             @default(now())
   user          Users                @relation(fields: [usersId], references: [id])
   usersId       String
   commandePasse ComamandeToMonitor[]
 }
 
 model Serre {
-  id            String         @id @default(uuid())
-  serreId       String         @unique
-  allCulture    CultureInfos[]
-  users         Users          @relation(fields: [usersId], references: [id])
-  usersId       String
-  sensorDatasId String         @unique
+  id         String         @id @default(uuid())
+  name       String         @default("principale")
+  protentaId String         @unique @default("p1001")
+  capteurId  String         @unique @default("c1001")
+  allCulture CultureInfos[]
+  users      Users[]        @relation("UserSerre")
 }
 
 model CultureInfos {
@@ -92,6 +92,26 @@ model capteurInfo {
   descriptionS16   String?
   inititalConfig   inititalConfig? @relation(fields: [inititalConfigId], references: [id])
   inititalConfigId String?
+}
+
+model Capteur {
+  id  String @id @default(uuid())
+  S1  String
+  S2  String
+  S3  String
+  S4  String
+  S5  String
+  S6  String
+  S7  String
+  S8  String
+  S9  String
+  S10 String
+  S11 String
+  S12 String
+  S13 String
+  S14 String
+  S15 String
+  S16 String
 }
 
 model inititalConfig {

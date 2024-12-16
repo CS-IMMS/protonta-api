@@ -1,0 +1,22 @@
+-- CreateTable
+CREATE TABLE "Capteur" (
+    "id" TEXT NOT NULL,
+    "S1" TEXT NOT NULL,
+    "S2" TEXT NOT NULL,
+    "S3" TEXT NOT NULL,
+    "S4" TEXT NOT NULL,
+    "S5" TEXT NOT NULL,
+    "S6" TEXT NOT NULL,
+    "S7" TEXT NOT NULL,
+    "S8" TEXT NOT NULL,
+    "S9" TEXT NOT NULL,
+    "S10" TEXT NOT NULL,
+    "S11" TEXT NOT NULL,
+    "S12" TEXT NOT NULL,
+    "S13" TEXT NOT NULL,
+    "S14" TEXT NOT NULL,
+    "S15" TEXT NOT NULL,
+    "S16" TEXT NOT NULL,
+
+    CONSTRAINT "Capteur_pkey" PRIMARY KEY ("id")
+);

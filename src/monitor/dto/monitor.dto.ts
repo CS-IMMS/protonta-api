@@ -3,11 +3,17 @@ import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class AddSerreDto {
   @ApiProperty({
-    description: 'Identifiant unique de la serre',
-    example: 'serre1',
+    description: 'Identifiant unique de la protenta',
+    example: 'p10002',
   })
   @IsNotEmpty()
   serreId: string;
+  @ApiProperty({
+    description: 'Identifiant unique du capteur',
+    example: 'c1001',
+  })
+  @IsNotEmpty()
+  capteurId: string;
 
   @ApiProperty({
     description: 'Identifiant unique du protenta associé à la serre',

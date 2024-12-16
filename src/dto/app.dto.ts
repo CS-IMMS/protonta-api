@@ -280,6 +280,12 @@ export class MonitorCommandeDto {
   @IsOptional()
   @IsBoolean()
   param311?: boolean;
+  @ApiPropertyOptional({
+    description: 'Paramètre booléen - Désactiver manuelAuto S12',
+  })
+  @IsOptional()
+  @IsBoolean()
+  param312?: boolean;
 
   @ApiPropertyOptional({
     description: 'Paramètre booléen - Désactiver manuelAuto S13',

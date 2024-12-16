@@ -114,13 +114,13 @@ export class MonitorService {
     try {
       return await this.prisma.serre.create({
         data: {
-          serreId: addSerreDto.serreId,
+          protentaId: addSerreDto.serreId,
+          capteurId: addSerreDto.capteurId,
           users: {
             connect: {
               id: userId,
             },
           },
-          sensorDatasId: addSerreDto.serreId,
         },
       });
     } catch (error) {
@@ -208,5 +208,8 @@ export class MonitorService {
         },
       },
     });
+  }
+  async getAllCapteur() {
+    return await this.prisma.capteur.findMany();
   }
 }

@@ -145,4 +145,8 @@ export class MonitorController {
   async getAllSerres() {
     return this.monitorService.getAllSerres();
   }
+  @Get('capteurs')
+  async getAllCapteur() {
+    return this.monitorService.getAllCapteur();
+  }
 }
